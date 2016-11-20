@@ -3,6 +3,8 @@
     <string name="title_activity_mapa">Map</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="Cancelar">CANCELAR</string>
+    <string name="Iniciar_Viaje">INICIAR VIAJE</string>
     <string-array name="Tags">
         <item>Terminal Tres Cruces</item>
         <item>Datalogic Software</item>

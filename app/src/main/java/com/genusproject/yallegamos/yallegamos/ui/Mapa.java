@@ -490,7 +490,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             public View getInfoWindow(Marker arg0) {
                 View v;
                 Object valor    = arg0.getTag();
-                Alerta alerta   = new Alerta();
+                Alerta alerta;
 
                 if (!valor.equals("MyLocation")) {
                     alerta  = alertaT.DevolverUnRegistro((Long) valor);
@@ -620,7 +620,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void MostrarInfoView(final Marker marker){
 
         Object valor    = marker.getTag();
-        Alerta alerta   = new Alerta();
+        Alerta alerta;
 
         if (!valor.equals("MyLocation")) {
 
@@ -918,13 +918,19 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         InputMethodManager inputMethodManager =
                 (InputMethodManager) this.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                this.getCurrentFocus().getWindowToken(), 0);
+        try
+        {
+            inputMethodManager.hideSoftInputFromWindow(
+                    this.getCurrentFocus().getWindowToken(), 0);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
     }
 
     public void IniciarServicio(){
         Intent mServiceIntent = new Intent(this, AlarmaServicio.class);
-        //mServiceIntent.setData(Uri.EMPTY);
 
         if (servicioActivo)
         {
@@ -941,7 +947,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public String ObtenerTextoRango(int rango){
-        String tRango = "";
+        String tRango = new String();
 
         if(rango < 5)
         {
@@ -981,11 +987,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 // This code will always run on the UI thread, therefore is safe to modify UI elements.
                 if(var)
                 {
-                    btnIniciarViaje.setText("CANCELAR");
+                    btnIniciarViaje.setText(R.string.Cancelar);
                 }
                 else
                 {
-                    btnIniciarViaje.setText("INICIAR VIAJE");
+                    btnIniciarViaje.setText(R.string.Iniciar_Viaje);
                 }
             }
         });
