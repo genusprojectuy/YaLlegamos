@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">YaLlegamos</string>
+    <string name="title_activity_mapa">Map</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string-array name="Tags">
+        <item>Terminal Tres Cruces</item>
+        <item>Datalogic Software</item>
+        <item>Universidad ORT</item>
+        <item>Plaza del Entrevero</item>
+        <item>Plaza Cagancha</item>
+        <item>Torre Antel</item>
+    </string-array>
+</resources>

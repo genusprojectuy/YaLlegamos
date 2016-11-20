@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"   >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:background="#00bcd4"
+        android:orientation="vertical"
+        android:id="@+id/contenedor_marca"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+        android:id="@+id/comencemos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aquí estamos"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="14dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp"
+        android:backgroundTint="#FFFFFF"
+        android:background="@android:color/darker_gray"/>
+
+    <!-- <TextView
+        android:id="@+id/tv_lat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_lng"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="▼"
+        android:layout_gravity="center"/>  -->
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:rotation="180"
+        android:background="@drawable/triangulo_abajo"
+        android:layout_below="@+id/contenedor_marca"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>
+

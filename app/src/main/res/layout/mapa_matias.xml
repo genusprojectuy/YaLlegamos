@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout android:id="@+id/content_frame" android:layout_width="match_parent" android:layout_height="match_parent" >
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.genusproject.yallegamos.yallegamos.ui.Mapa" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/searchView"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/borde_gris"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:paddingBottom="2dp">
+
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/btn_DrawOpen"
+                    android:background="@drawable/ic_menu"
+                    android:onClick="AbrirMenu (Mapa)" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
+                    android:inputType="textPersonName"
+                    android:id="@+id/et_search"
+                    android:textSize="18sp"
+                    android:textColor="#838383"
+                    android:background="#FFF"
+                    android:gravity="left|center"
+                    android:hint="Buscar"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:cursorVisible="false"/>
+
+
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_search"
+                    android:id="@+id/mapa_btnSearch"
+                    android:tint="#838383" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_IniciarViaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="3dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/mybutton"
+                android:text="INICIAR VIAJE"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="40dp"
+                android:textSize="18sp"
+                android:onClick="sendMessage" />
+
+
+        </RelativeLayout>
+
+
+
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:background="#FFF"
+        android:divider="#ccc"
+        android:dividerHeight="1dp"
+        android:paddingRight="15dp"/>
+
+
+
+</android.support.v4.widget.DrawerLayout>
