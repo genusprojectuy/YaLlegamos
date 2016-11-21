@@ -632,6 +632,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             LayoutInflater inflater = (LayoutInflater) Mapa.this.getSystemService(LAYOUT_INFLATER_SERVICE);
             final View layout       = inflater.inflate(R.layout.seekbar_range, (ViewGroup) findViewById(R.id.your_dialog_root_element));
 
+
+            //a
             yourDialog.setContentView(layout);
 
             Button btnAlarmaAceptar         = (Button) layout.findViewById(R.id.btn_Alarma_Aceptar);
