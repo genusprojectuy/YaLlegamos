@@ -49,7 +49,6 @@ public class AlarmaServicio extends IntentService {
     private alertaTabla alertaT;
     private List<Alerta> lstAlerta;
     private Utilidades utilidades;
-    private Observado ob = Observado.getInstancia();
 
     public AlarmaServicio() {
         this(AlarmaServicio.class.getName());
@@ -71,12 +70,6 @@ public class AlarmaServicio extends IntentService {
 
     }
 
-//    @Override
- //   public int onStartCommand(Intent intent, int flags, int startId) {
- //       return  START_STICKY;
- //       //return super.onStartCommand(intent, flags, startId);
- //   }
-
     @Override
     protected void onHandleIntent(Intent workIntent) {
         // Gets data from the incoming Intent
@@ -85,7 +78,6 @@ public class AlarmaServicio extends IntentService {
         // Do work here, based on the contents of dataString
         //...
 
-        ob.setAlarmasActivas(true);
 
         utilidades  = Utilidades.getInstance();
         alertaT     = alertaTabla.getInstancia(this.getApplicationContext());
@@ -282,15 +274,20 @@ public class AlarmaServicio extends IntentService {
             mNotifyBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("New Message")
                     .setContentText("You've received new messages.")
-                    .setSmallIcon(R.mipmap.ic_launcher);
+                    .setSmallIcon(R.drawable.cast_ic_notification_small_icon);
 
-            //Intent resultIntent             = new Intent(getApplicationContext(), Mapa.class);
+            Intent resultIntent             = new Intent(getApplicationContext(), Mapa.class);
+            TaskStackBuilder stackBuilder   = TaskStackBuilder.create(getApplicationContext());
+            stackBuilder.addParentStack(Mapa.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mNotifyBuilder.setContentIntent(resultPendingIntent);
 
-            Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
-            PendingIntent contIntent    = PendingIntent.getActivity(getApplicationContext(), 0, notIntent, 0);
 
-            mNotifyBuilder.setContentIntent(contIntent);
-            mNotifyBuilder.setOngoing(true);
             mNotificationManager.notify(NOTIFICACION_ID, mNotifyBuilder.build());
         }
 
@@ -322,7 +319,6 @@ public class AlarmaServicio extends IntentService {
 
         public void QuitarNotificacion(){
             mNotificationManager.cancel(NOTIFICACION_ID);
-            ob.setAlarmasActivas(false);
         }
     }
 
