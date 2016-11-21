@@ -39,7 +39,6 @@ import com.genusproject.yallegamos.yallegamos.adaptadores.DrawerListAdapter;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
 import com.genusproject.yallegamos.yallegamos.utiles.AlarmaServicio;
-import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
 import com.genusproject.yallegamos.yallegamos.utiles.Observado;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
@@ -105,7 +104,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private LatLngBounds.Builder cameraBuilder;
     private ArrayList<Marker> lstMarcadores;
     private ArrayList<c_Circulo> lstCirculos;
-    private int padding         = 300;
+    private int padding         = 100;
     private Boolean MenuAbierto = false;
     private CameraUpdate cu;
     private EditText etSearch;
@@ -126,6 +125,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         alertaT     = alertaTabla.getInstancia(this);
         utilidades  = Utilidades.getInstance();
+
+        //EstoEsUnCambioDePrueba 21/11/2016
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -386,6 +387,12 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private void updateUI() {
 
         if(mMap != null) {
+            if(mCurrentLocation == null)
+            {
+                mCurrentLocation = new Location("FalsaUbicacion");
+                mCurrentLocation.setLatitude(-34.905876);
+                mCurrentLocation.setLongitude(-56.191423);
+            }
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
             if (!ubicacionEncontrada) {
