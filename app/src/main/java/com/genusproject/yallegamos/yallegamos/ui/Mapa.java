@@ -40,7 +40,6 @@ import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
 import com.genusproject.yallegamos.yallegamos.utiles.AlarmaServicio;
 import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
-import com.genusproject.yallegamos.yallegamos.utiles.Observado;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
 import com.google.android.gms.appindexing.Action;
@@ -71,20 +70,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.AREA_OPACIDAD;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OPACIDAD;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_WIDTH;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_MAXIMO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_STANDAR;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
+
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
 
-public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer {
+public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
     private ListView drawerList;
@@ -105,13 +104,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private LatLngBounds.Builder cameraBuilder;
     private ArrayList<Marker> lstMarcadores;
     private ArrayList<c_Circulo> lstCirculos;
-    private int padding         = 300;
+    private int padding         = 100;
     private Boolean MenuAbierto = false;
     private CameraUpdate cu;
     private EditText etSearch;
     private Utilidades utilidades;
-    private Button btnIniciarViaje;
-    private boolean servicioActivo = false;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -148,7 +145,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
 
-        btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
+        Button btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
 
         updateValuesFromBundle(savedInstanceState);
 
@@ -164,9 +161,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
 
-
-        Observado observado = Observado.getInstancia();
-        observado.addObserver(this);
 
     }
 
@@ -386,6 +380,14 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private void updateUI() {
 
         if(mMap != null) {
+            if (mCurrentLocation == null)
+            {
+                LatLng lng = new LatLng(-34.907627, -56.175032);
+                mCurrentLocation = new Location("Falso");
+                mCurrentLocation.setLatitude(lng.latitude);
+                mCurrentLocation.setLongitude(lng.longitude);
+            }
+
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
             if (!ubicacionEncontrada) {
@@ -490,7 +492,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             public View getInfoWindow(Marker arg0) {
                 View v;
                 Object valor    = arg0.getTag();
-                Alerta alerta;
+                Alerta alerta   = new Alerta();
 
                 if (!valor.equals("MyLocation")) {
                     alerta  = alertaT.DevolverUnRegistro((Long) valor);
@@ -590,10 +592,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         markerOptions.position(arg0);
         mMap.animateCamera(CameraUpdateFactory.newLatLng(arg0));
 
-        int areaColor   = utilidades.RandomColor(AREA_OPACIDAD);
+        int areaColor   = COLOR_AREA_ALERTA;
         int bordeColor  = utilidades.ColorOpacidad(areaColor, BORDER_OPACIDAD);
 
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
+        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
 
         Marker marker = mMap.addMarker(markerOptions);
         marker.setTag(alerta.get_ID());
@@ -618,16 +621,17 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void MostrarInfoView(final Marker marker){
-
+        Log.e(TAG, "Click");
         Object valor    = marker.getTag();
-        Alerta alerta;
+        Alerta alerta   = new Alerta();
 
         if (!valor.equals("MyLocation")) {
-
+            Log.e(TAG, "Click2");
             alerta                  = alertaT.DevolverUnRegistro((Long) valor);
             final Dialog yourDialog = new Dialog(Mapa.this);
             LayoutInflater inflater = (LayoutInflater) Mapa.this.getSystemService(LAYOUT_INFLATER_SERVICE);
             final View layout       = inflater.inflate(R.layout.seekbar_range, (ViewGroup) findViewById(R.id.your_dialog_root_element));
+
 
             yourDialog.setContentView(layout);
 
@@ -856,10 +860,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                             mO.position(latLng2);
 
-                            int areaColor   = utilidades.RandomColor(AREA_OPACIDAD);
+                            int areaColor   = COLOR_AREA_ALERTA;
                             int bordeColor  = utilidades.ColorOpacidad(areaColor, BORDER_OPACIDAD);
 
                             mO.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
+                            //mO.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
                             Marker m = mMap.addMarker(mO);
                             m.setTag(unaAlerta.get_ID());
 
@@ -918,36 +923,18 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         InputMethodManager inputMethodManager =
                 (InputMethodManager) this.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        try
-        {
-            inputMethodManager.hideSoftInputFromWindow(
-                    this.getCurrentFocus().getWindowToken(), 0);
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, e.getLocalizedMessage());
-        }
+        inputMethodManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(), 0);
     }
 
     public void IniciarServicio(){
         Intent mServiceIntent = new Intent(this, AlarmaServicio.class);
-
-        if (servicioActivo)
-        {
-            Log.e(TAG, "Detener servicio");
-            stopService(mServiceIntent);
-        }
-        else
-        {
-            Log.e(TAG, "Iniciar servicio");
-            startService(mServiceIntent);
-        }
-
-        //btnIniciarViaje.setText("Cancelar");
+        //mServiceIntent.setData(Uri.EMPTY);
+        startService(mServiceIntent);
     }
 
     public String ObtenerTextoRango(int rango){
-        String tRango = new String();
+        String tRango = "";
 
         if(rango < 5)
         {
@@ -975,26 +962,4 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         }
     }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        Log.e(TAG, "Valor observer cambiado");
-        final boolean var   = (boolean) arg;
-        servicioActivo      = var;
-        Mapa.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                if(var)
-                {
-                    btnIniciarViaje.setText(R.string.Cancelar);
-                }
-                else
-                {
-                    btnIniciarViaje.setText(R.string.Iniciar_Viaje);
-                }
-            }
-        });
-    }
-
 }
