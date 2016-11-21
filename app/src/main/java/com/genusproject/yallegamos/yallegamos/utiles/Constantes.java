@@ -1,5 +1,7 @@
 package com.genusproject.yallegamos.yallegamos.utiles;
 
+import android.graphics.Color;
+
 /**
  * Created by alvar on 24/09/2016.
  */
@@ -21,15 +23,16 @@ public final class Constantes {
     public static long UPDATE_INTERVAL_IN_MILLISECONDS            = 10000;
     public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS    = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-    public static int AREA_OPACIDAD     = 60;
-    public static int BORDER_WIDTH      = 5;
-    public static int BORDER_OPACIDAD   = 100;
+    public static int AREA_OPACIDAD     = 50;
+    public static int BORDER_WIDTH      = 2;
+    public static int BORDER_OPACIDAD   = 255;
 
     public static int NOTIFICACION_ID   = 1234;
 
     public static int VIBRAR_LONG       = 100;
-    //public static long[] VIBRAR_PAT   = 100;
+    //public static long[] VIBRAR_PAT        = 100;
 
+    public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 
 
 }
