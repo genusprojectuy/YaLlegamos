@@ -336,6 +336,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+
+                ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                Log.e(TAG, "Sin permiso para ver ubicación");
+
                 return;
             }
             mCurrentLocation    = LocationServices.FusedLocationApi.getLastLocation(client);
@@ -595,8 +599,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         int areaColor   = COLOR_AREA_ALERTA;
         int bordeColor  = utilidades.ColorOpacidad(areaColor, BORDER_OPACIDAD);
 
-        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
+        //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
 
         Marker marker = mMap.addMarker(markerOptions);
         marker.setTag(alerta.get_ID());
