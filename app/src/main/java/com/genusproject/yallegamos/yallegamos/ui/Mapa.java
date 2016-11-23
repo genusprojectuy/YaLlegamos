@@ -1,20 +1,29 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -336,6 +345,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
+
+                ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                Log.e(TAG, "Sin permiso para ver ubicación");
+
                 return;
             }
             mCurrentLocation    = LocationServices.FusedLocationApi.getLastLocation(client);
@@ -596,7 +609,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         int bordeColor  = utilidades.ColorOpacidad(areaColor, BORDER_OPACIDAD);
 
         //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
+        Bitmap bitmap = getBitmap(this.getApplicationContext(), R.drawable.ic_marcadoralerta);
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
 
         Marker marker = mMap.addMarker(markerOptions);
         marker.setTag(alerta.get_ID());
@@ -825,7 +839,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void DibujarMiUbicacion(){
         LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-        MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        //MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Bitmap bitmap = getBitmap(this.getApplicationContext(), R.drawable.ic_marcadoractual);
+        MarkerOptions markerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+
         markerOptions.position(latLng);
 
         myLocationMarker = mMap.addMarker(markerOptions);
@@ -863,8 +880,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                             int areaColor   = COLOR_AREA_ALERTA;
                             int bordeColor  = utilidades.ColorOpacidad(areaColor, BORDER_OPACIDAD);
 
-                            mO.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
-                            //mO.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marcadoralerta));
+                            //mO.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
+                            Bitmap bitmap = getBitmap(this.getApplicationContext(), R.drawable.ic_marcadoralerta);
+                            mO.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                             Marker m = mMap.addMarker(mO);
                             m.setTag(unaAlerta.get_ID());
 
@@ -961,5 +979,28 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 }
             }
         }
+    }
+
+    private Bitmap getBitmap(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        if (drawable instanceof BitmapDrawable)
+        {
+            return BitmapFactory.decodeResource(context.getResources(), drawableId);
+        }
+        else if (drawable instanceof VectorDrawable) {
+            return getBitmap((VectorDrawable) drawable);
+        } else {
+            throw new IllegalArgumentException("unsupported drawable type");
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
     }
 }
