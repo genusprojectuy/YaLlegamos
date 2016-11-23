@@ -297,6 +297,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
+            Log.e(TAG, "Sin permiso para ver ubicación");
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
@@ -347,6 +351,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 // for ActivityCompat#requestPermissions for more details.
 
                 ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+
                 Log.e(TAG, "Sin permiso para ver ubicación");
 
                 return;
