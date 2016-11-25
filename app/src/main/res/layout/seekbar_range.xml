@@ -3,7 +3,8 @@
     android:id="@+id/your_dialog_root_element"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/textViewwww"
