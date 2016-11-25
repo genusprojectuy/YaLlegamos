@@ -24,7 +24,7 @@ public final class Constantes {
     public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS    = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     public static int AREA_OPACIDAD     = 50;
-    public static int BORDER_WIDTH      = 2;
+    public static int BORDER_WIDTH      = 3;
     public static int BORDER_OPACIDAD   = 255;
 
     public static int NOTIFICACION_ID   = 1234;
@@ -34,5 +34,7 @@ public final class Constantes {
 
     public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 
+    public static int MARCADOR_W       = 40;
+    public static int MARCADOR_H       = 40;
 
 }

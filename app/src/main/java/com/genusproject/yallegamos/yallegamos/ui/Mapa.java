@@ -85,6 +85,8 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OP
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_WIDTH;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MARCADOR_H;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MARCADOR_W;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_MAXIMO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_STANDAR;
@@ -991,7 +993,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         if (drawable instanceof BitmapDrawable)
         {
-            return BitmapFactory.decodeResource(context.getResources(), drawableId);
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, MARCADOR_W, MARCADOR_H, false);
+            return resizedBitmap;
         }
         else if (drawable instanceof VectorDrawable) {
             return getBitmap((VectorDrawable) drawable);
@@ -1007,6 +1011,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         vectorDrawable.draw(canvas);
-        return bitmap;
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, MARCADOR_W, MARCADOR_H, false);
+
+        return resizedBitmap;
     }
 }
