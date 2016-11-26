@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -33,27 +35,29 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_ID;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PROCESADA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
+
 
 /**
  * Created by alvar on 08/10/2016.
  */
 
-public class AlarmaServicio extends IntentService {
+public class AlarmaServicio extends IntentService{
 
-    private String TAG              = "SERVICIO B";
+    private String TAG              = "ALARMA_SERVICIO";
     private boolean FaltanAlertas   = true;
     private alertaTabla alertaT;
     private List<Alerta> lstAlerta;
-    private Utilidades utilidades;
-
-    public AlarmaServicio() {
-        this(AlarmaServicio.class.getName());
-    }
-
+    private Utilidades utilidades = Utilidades.getInstance();
+    private Observado ob = Observado.getInstancia();
+    private LocationManager locationManager;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -62,6 +66,10 @@ public class AlarmaServicio extends IntentService {
      */
     public AlarmaServicio(String name) {
         super(name);
+    }
+
+    public AlarmaServicio() {
+        this(AlarmaServicio.class.getName());
     }
 
     @Override
@@ -77,6 +85,10 @@ public class AlarmaServicio extends IntentService {
         //...
         // Do work here, based on the contents of dataString
         //...
+
+        utilidades.MostrarMensaje(TAG, "Iniciando servicio");
+
+        ob.setAlarmasActivas(true);
 
 
         utilidades  = Utilidades.getInstance();
@@ -96,6 +108,7 @@ public class AlarmaServicio extends IntentService {
     }
 
     public void stopServicio(){
+        utilidades.MostrarMensaje(TAG, "Finalizando servicio");
         try {
             finalize();
         } catch (Throwable throwable) {
@@ -103,12 +116,11 @@ public class AlarmaServicio extends IntentService {
         }
     }
 
-    public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+
+
+    public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer
     {
         private DecimalFormat df                                = new DecimalFormat("###.##");
-        private String TAG                                      = "SERVICIO B";
-        private long UPDATE_INTERVAL_IN_MILLISECONDS            = 10000;
-        private long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS    = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
         private LocationRequest mLocationRequest;
         private Location mCurrentLocation;
         private GoogleApiClient client;
@@ -116,12 +128,23 @@ public class AlarmaServicio extends IntentService {
         private NotificationCompat.Builder mNotifyBuilder;
 
         public MyLocationListener(){
+            ob.addObserver(this);
 
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             ArmarNotificacion();
-
             buildGoogleApiClient();
             client.connect();
+
+
+        }
+
+        @Override
+        public void update(Observable o, Object arg) {
+            boolean var = (boolean) arg;
+            if (!var) {
+                FaltanAlertas = false;
+                QuitarNotificacion();
+            }
         }
 
         @Override
@@ -161,6 +184,7 @@ public class AlarmaServicio extends IntentService {
             verificarAlertas();
         }
 
+
         private synchronized void buildGoogleApiClient() {
             client = new GoogleApiClient.Builder(getApplicationContext())
                     .addConnectionCallbacks(this)
@@ -188,6 +212,13 @@ public class AlarmaServicio extends IntentService {
             LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
         }
 
+        protected void stopLocationUpdates() {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);// requestLocationUpdates(client, mLocationRequest, this);
+        }
+
         public void verificarAlertas(){
             lstAlerta   = alertaT.DevolverAlertas();
 
@@ -195,6 +226,7 @@ public class AlarmaServicio extends IntentService {
             {
                 if(lstAlerta != null) {
                     if (lstAlerta.size() > 0) {
+
 
                         lstAlerta = alertaT.DevolverAlertas();
                         boolean auxFaltanAlertas = false;
@@ -224,6 +256,7 @@ public class AlarmaServicio extends IntentService {
                         }
                         else
                         {
+                            ob.setAlarmasActivas(false);
                             QuitarNotificacion();
                         }
 
@@ -270,28 +303,23 @@ public class AlarmaServicio extends IntentService {
         }
 
         public void ArmarNotificacion(){
+            utilidades.MostrarMensaje(TAG, "Armar notificacion");
             // Sets an ID for the notification, so it can be updated
             mNotifyBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("New Message")
                     .setContentText("You've received new messages.")
-                    .setSmallIcon(R.drawable.cast_ic_notification_small_icon);
+                    .setSmallIcon(R.mipmap.ic_launcher);
 
-            Intent resultIntent             = new Intent(getApplicationContext(), Mapa.class);
-            TaskStackBuilder stackBuilder   = TaskStackBuilder.create(getApplicationContext());
-            stackBuilder.addParentStack(Mapa.class);
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mNotifyBuilder.setContentIntent(resultPendingIntent);
+            Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
+            PendingIntent contIntent    = PendingIntent.getActivity(getApplicationContext(), 0, notIntent, 0);
 
-
+            mNotifyBuilder.setContentIntent(contIntent);
+            mNotifyBuilder.setOngoing(true);
             mNotificationManager.notify(NOTIFICACION_ID, mNotifyBuilder.build());
         }
 
         public void ActualizarNotificacion(){
+            utilidades.MostrarMensaje(TAG, "Actualizar notificacion");
             if(lstAlerta != null)
             {
                 if(lstAlerta.size() > 0 )
@@ -318,7 +346,12 @@ public class AlarmaServicio extends IntentService {
         }
 
         public void QuitarNotificacion(){
+            utilidades.MostrarMensaje(TAG, "Quitando nitificación: " + NOTIFICACION_ID);
             mNotificationManager.cancel(NOTIFICACION_ID);
+            FaltanAlertas = false;
+
+            stopLocationUpdates();
+
         }
     }
 

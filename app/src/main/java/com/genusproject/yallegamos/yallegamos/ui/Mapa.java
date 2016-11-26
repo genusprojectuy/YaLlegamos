@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -49,6 +50,7 @@ import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
 import com.genusproject.yallegamos.yallegamos.utiles.AlarmaServicio;
 import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
+import com.genusproject.yallegamos.yallegamos.utiles.Observado;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
 import com.google.android.gms.appindexing.Action;
@@ -85,23 +87,24 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OP
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_WIDTH;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MARCADOR_H;
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MARCADOR_W;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PADDING;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_MAXIMO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_STANDAR;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
 
+import java.util.Observable;
+import java.util.Observer;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
 
-public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer{
 
     private GoogleMap mMap;
     private ListView drawerList;
     private ActionBarDrawerToggle drawerToggle;
     private DrawerLayout drawerLayout;
     private Marker myLocationMarker;
-    private String TAG                                      = "SERVICIO A";
+    private String TAG                                      = "MAPA";
     private String LOCATION_KEY                             = "location-key";
     private String LAST_UPDATED_TIME_STRING_KEY             = "last-updated-time-string-key";
     private DecimalFormat df                                = new DecimalFormat("###.##");
@@ -115,11 +118,13 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private LatLngBounds.Builder cameraBuilder;
     private ArrayList<Marker> lstMarcadores;
     private ArrayList<c_Circulo> lstCirculos;
-    private int padding         = 100;
     private Boolean MenuAbierto = false;
     private CameraUpdate cu;
     private EditText etSearch;
     private Utilidades utilidades;
+    private Button btnIniciarViaje;
+    private boolean servicioActivo = false;
+    private Observado observado;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -139,6 +144,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         mapFragment.getMapAsync(this);
 
         etSearch = (EditText) findViewById(R.id.et_search);
+        btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
 
         etSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,8 +162,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
 
-        Button btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
-
         updateValuesFromBundle(savedInstanceState);
 
         buildGoogleApiClient();
@@ -167,11 +171,14 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         btnIniciarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IniciarServicio();
+                ManejarServicio();
                 MoverCamaraTodosMarcadores();
             }
         });
 
+
+        observado = Observado.getInstancia();
+        observado.addObserver(this);
 
     }
 
@@ -302,7 +309,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
-            Log.e(TAG, "Sin permiso para ver ubicación");
+            utilidades.MostrarMensaje(TAG, "Sin permiso para ver ubicación");
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
@@ -355,7 +362,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
-                Log.e(TAG, "Sin permiso para ver ubicación");
+                utilidades.MostrarMensaje(TAG, "Sin permiso para ver ubicación");
 
                 return;
             }
@@ -380,7 +387,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
-        Log.i("A", "Connection suspended");
+        utilidades.MostrarMensaje(TAG, "Conección con el cliente de google suspendida");
         client.connect();
     }
 
@@ -388,7 +395,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void onConnectionFailed(ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
-        Log.i("A", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        utilidades.MostrarMensaje(TAG,"Fallo la coneccion con el cliente: " + result.getErrorCode());
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -643,12 +650,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void MostrarInfoView(final Marker marker){
-        Log.e(TAG, "Click");
         Object valor    = marker.getTag();
         Alerta alerta   = new Alerta();
 
         if (!valor.equals("MyLocation")) {
-            Log.e(TAG, "Click2");
             alerta                  = alertaT.DevolverUnRegistro((Long) valor);
             final Dialog yourDialog = new Dialog(Mapa.this);
             LayoutInflater inflater = (LayoutInflater) Mapa.this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -828,14 +833,14 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         DibujarMarcadores();
 
         if (alarmasActivas) {
-            cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), padding);
+            cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
             mMap.moveCamera(cu);
             mMap.animateCamera(cu);
         }
         else
         {
             cameraBuilder.include(myLocationMarker.getPosition());
-            cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), padding);
+            cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
 
             mMap.moveCamera(cu);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
@@ -940,7 +945,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         }
         catch (IOException io)
         {
-            Log.e(TAG, io.getLocalizedMessage());
+            utilidades.MostrarMensaje(TAG, io.getLocalizedMessage());
         }
 
     }
@@ -953,10 +958,19 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 this.getCurrentFocus().getWindowToken(), 0);
     }
 
-    public void IniciarServicio(){
+    public void ManejarServicio(){
         Intent mServiceIntent = new Intent(this, AlarmaServicio.class);
-        //mServiceIntent.setData(Uri.EMPTY);
-        startService(mServiceIntent);
+        if (servicioActivo)
+        {
+            observado.setAlarmasActivas(false);
+            utilidades.MostrarMensaje(TAG, "Detener servicio");
+            stopService(mServiceIntent);
+        }
+        else
+        {
+            utilidades.MostrarMensaje(TAG,"Iniciar servicio");
+            startService(mServiceIntent);
+        }
     }
 
     public String ObtenerTextoRango(int rango){
@@ -990,30 +1004,34 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     private Bitmap getBitmap(Context context, int drawableId) {
+
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
-        if (drawable instanceof BitmapDrawable)
-        {
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, MARCADOR_W, MARCADOR_H, false);
-            return resizedBitmap;
-        }
-        else if (drawable instanceof VectorDrawable) {
-            return getBitmap((VectorDrawable) drawable);
-        } else {
-            throw new IllegalArgumentException("unsupported drawable type");
-        }
+
+        Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+
+        return bmp;
+
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vectorDrawable.draw(canvas);
-
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, MARCADOR_W, MARCADOR_H, false);
-
-        return resizedBitmap;
+    @Override
+    public void update(Observable o, Object arg) {
+        utilidades.MostrarMensaje(TAG, "Valor observer cambiado");
+        final boolean var = (boolean) arg;
+        servicioActivo = var;
+        Mapa.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                if (var) {
+                    btnIniciarViaje.setText(R.string.Cancelar);
+                } else {
+                    btnIniciarViaje.setText(R.string.Iniciar_Viaje);
+                }
+            }
+        });
     }
 }

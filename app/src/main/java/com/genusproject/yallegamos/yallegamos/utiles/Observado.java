@@ -12,11 +12,11 @@ public class Observado extends Observable {
 
     private static Observado instancia;
     private boolean alarmasActivas;
-    private String mensaje;
+    private String TAG = "OBSERVADO";
+    private Utilidades utilidades = Utilidades.getInstance();
 
     private Observado(){
-        mensaje = "Objeto Observado Iniciado";
-        Log.e("SERVICIO C", mensaje);
+        utilidades.MostrarMensaje(TAG, "Iniciando");
     }
 
     public static Observado getInstancia()
@@ -29,17 +29,11 @@ public class Observado extends Observable {
     }
 
     public void setAlarmasActivas(boolean m){
-        Log.e("SERVICIO C", "Chucha");
+        utilidades.MostrarMensaje(TAG, "Cambio el valor: " + m);
         alarmasActivas  = m;
         setChanged();
         //Notificamos a los observadores y le enviamos el nuevo valor
         notifyObservers(alarmasActivas);
-        //notifyObservers(); Este metodo solo notifica que hubo cambios en el objeto
-        Log.e("SERVICIO C", "ChuchaCHUCHA");
-
-        int observadores = countObservers();
-        Log.e("SERVICIO C", "ChuchaCHUCHA a" + observadores);
-
 
     }
 

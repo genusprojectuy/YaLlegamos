@@ -34,7 +34,7 @@ public final class Constantes {
 
     public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 
-    public static int MARCADOR_W       = 40;
-    public static int MARCADOR_H       = 40;
+    public static int MAPA_PADDING = 200;
+
 
 }

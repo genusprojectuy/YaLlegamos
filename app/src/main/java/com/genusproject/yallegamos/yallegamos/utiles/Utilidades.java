@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,7 +16,7 @@ import java.util.Random;
  */
 public class Utilidades {
     private static Utilidades ourInstance = new Utilidades();
-
+    private String TAG = "SERVICIO - ";
     public static Utilidades getInstance() {
         return ourInstance;
     }
@@ -160,6 +161,11 @@ public class Utilidades {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(intervalo);
 
+    }
+
+    public void MostrarMensaje(String t, String msg)
+    {
+        Log.e(TAG + t, msg);
     }
 
 }
