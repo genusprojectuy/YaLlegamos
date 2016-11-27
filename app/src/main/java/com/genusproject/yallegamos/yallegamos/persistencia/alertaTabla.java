@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 
 import java.util.ArrayList;
 import java.util.List;

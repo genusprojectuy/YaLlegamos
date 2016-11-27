@@ -159,9 +159,30 @@ public class Utilidades {
 
     public void Vibrar(int intervalo, Context context){
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(intervalo);
+        if(v.hasVibrator())
+        {
+            v.vibrate(intervalo);
+        }
 
     }
+
+    public void VibrarAlarma(long [] patron, Context context)
+    {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        //long [] patron = {0, 500, 300, 1000, 500};
+        if(v.hasVibrator())
+        {
+            v.vibrate(patron,3);
+        }
+    }
+
+    public void DetenerVibracion(Context context)
+    {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        v.cancel();
+
+    }
+
 
     public void MostrarMensaje(String t, String msg)
     {

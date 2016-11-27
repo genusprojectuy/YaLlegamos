@@ -28,9 +28,10 @@ public final class Constantes {
     public static int BORDER_OPACIDAD   = 255;
 
     public static int NOTIFICACION_ID   = 1234;
+    public static int NOTIFICACION_DESTINO_ID   = 1235;
 
     public static int VIBRAR_LONG       = 100;
-    //public static long[] VIBRAR_PAT        = 100;
+    public static long[] VIBRAR_PAT        = {0, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500};
 
     public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 

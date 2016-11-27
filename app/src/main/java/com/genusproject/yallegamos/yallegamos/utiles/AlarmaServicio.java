@@ -11,6 +11,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.service.notification.NotificationListenerService;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -39,10 +42,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_DESTINO_ID;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_ID;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PROCESADA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_PAT;
 
 
 /**
@@ -51,13 +57,14 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_IN
 
 public class AlarmaServicio extends IntentService{
 
-    private String TAG              = "ALARMA_SERVICIO";
+    private String TAG              = this.getClass().getSimpleName().toUpperCase();
     private boolean FaltanAlertas   = true;
     private alertaTabla alertaT;
     private List<Alerta> lstAlerta;
     private Utilidades utilidades = Utilidades.getInstance();
     private Observado ob = Observado.getInstancia();
     private LocationManager locationManager;
+
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -98,6 +105,7 @@ public class AlarmaServicio extends IntentService{
         if (lstAlerta.size() > 0)
         {
             MyLocationListener myLocationListener = new MyLocationListener();
+            myLocationListener.IniciarEscuchaUbicacion();
         }
         else
         {
@@ -116,10 +124,7 @@ public class AlarmaServicio extends IntentService{
         }
     }
 
-
-
-    public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer
-    {
+    public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer {
         private DecimalFormat df                                = new DecimalFormat("###.##");
         private LocationRequest mLocationRequest;
         private Location mCurrentLocation;
@@ -136,6 +141,11 @@ public class AlarmaServicio extends IntentService{
             client.connect();
 
 
+        }
+
+        public void IniciarEscuchaUbicacion()
+        {
+            utilidades.MostrarMensaje(TAG, "Iniciando escucha de ubicacion");
         }
 
         @Override
@@ -292,13 +302,24 @@ public class AlarmaServicio extends IntentService{
         public void Notificar(Alerta alerta){
             alerta.setEstado(PROCESADA);
             alertaT.Update(alerta);
-            String texto = "Dentro del rango!! " + alerta.getDireccion();
 
-            Toast toast = Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_LONG);
-            toast.show();
+            NotificationCompat.Builder mNot_Llegada = new NotificationCompat.Builder(getApplicationContext())
+                    .setContentTitle("Ya llegamos!")
+                    .setContentText("Estas llegando a: " + alerta.getDireccion())
+                    .setSmallIcon(R.mipmap.ic_launcher);
 
+            Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
+            PendingIntent contIntent    = PendingIntent.getActivity(getApplicationContext(), 0, notIntent, 0);
 
+            mNot_Llegada.setContentIntent(contIntent);
 
+            long[] patron = VIBRAR_PAT;
+            mNot_Llegada.setVibrate(patron);
+
+            mNotificationManager.notify(NOTIFICACION_DESTINO_ID, mNot_Llegada.build());
+
+            //utilidades.VibrarAlarma(VIBRAR_PAT, AlarmaServicio.this);
+            utilidades.MostrarMensaje(TAG, "Notificando llegada a destino");
 
         }
 
@@ -306,8 +327,8 @@ public class AlarmaServicio extends IntentService{
             utilidades.MostrarMensaje(TAG, "Armar notificacion");
             // Sets an ID for the notification, so it can be updated
             mNotifyBuilder = new NotificationCompat.Builder(getApplicationContext())
-                    .setContentTitle("New Message")
-                    .setContentText("You've received new messages.")
+                    .setContentTitle("Iniciando viaje")
+                    .setContentText("Buscando el destino más proximo.")
                     .setSmallIcon(R.mipmap.ic_launcher);
 
             Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
@@ -316,6 +337,7 @@ public class AlarmaServicio extends IntentService{
             mNotifyBuilder.setContentIntent(contIntent);
             mNotifyBuilder.setOngoing(true);
             mNotificationManager.notify(NOTIFICACION_ID, mNotifyBuilder.build());
+
         }
 
         public void ActualizarNotificacion(){
@@ -346,13 +368,13 @@ public class AlarmaServicio extends IntentService{
         }
 
         public void QuitarNotificacion(){
-            utilidades.MostrarMensaje(TAG, "Quitando nitificación: " + NOTIFICACION_ID);
             mNotificationManager.cancel(NOTIFICACION_ID);
             FaltanAlertas = false;
 
             stopLocationUpdates();
 
         }
+
     }
 
 

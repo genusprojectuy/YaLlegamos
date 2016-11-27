@@ -49,7 +49,6 @@ import com.genusproject.yallegamos.yallegamos.adaptadores.DrawerListAdapter;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
 import com.genusproject.yallegamos.yallegamos.utiles.AlarmaServicio;
-import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
 import com.genusproject.yallegamos.yallegamos.utiles.Observado;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
@@ -137,6 +136,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapa_matias);
 
+
         alertaT     = alertaTabla.getInstancia(this);
         utilidades  = Utilidades.getInstance();
 
@@ -179,6 +179,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         observado = Observado.getInstancia();
         observado.addObserver(this);
+
 
     }
 
@@ -959,17 +960,20 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void ManejarServicio(){
-        Intent mServiceIntent = new Intent(this, AlarmaServicio.class);
+        Intent mServiceIntent       = new Intent(this, AlarmaServicio.class);
+
         if (servicioActivo)
         {
             observado.setAlarmasActivas(false);
             utilidades.MostrarMensaje(TAG, "Detener servicio");
             stopService(mServiceIntent);
+
         }
         else
         {
             utilidades.MostrarMensaje(TAG,"Iniciar servicio");
             startService(mServiceIntent);
+
         }
     }
 
@@ -989,15 +993,16 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void ActualizarAlertasDistancia(){
-        if(mCurrentLocation != null)
-        {
-            LatLng origen = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        if(mCurrentLocation != null) {
+            if (!servicioActivo) {
+                LatLng origen = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-            if (lstAlerta != null) {
-                for (Alerta unaAlerta : lstAlerta) {
-                    LatLng destino = new LatLng(Double.valueOf(unaAlerta.getLatitud()), Double.valueOf(unaAlerta.getLongitud()));
-                    unaAlerta.setDistancia(utilidades.DistanceTo(origen, destino));
-                    alertaT.Update(unaAlerta);
+                if (lstAlerta != null) {
+                    for (Alerta unaAlerta : lstAlerta) {
+                        LatLng destino = new LatLng(Double.valueOf(unaAlerta.getLatitud()), Double.valueOf(unaAlerta.getLongitud()));
+                        unaAlerta.setDistancia(utilidades.DistanceTo(origen, destino));
+                        alertaT.Update(unaAlerta);
+                    }
                 }
             }
         }
@@ -1034,4 +1039,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
     }
+
+
 }

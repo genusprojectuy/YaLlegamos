@@ -33,6 +33,7 @@
             android:name=".utiles.AlarmaServicio"
             android:exported="false"/>
 
+
         <activity
             android:name=".ui.Mapa"
             android:label="@string/title_activity_mapa">
