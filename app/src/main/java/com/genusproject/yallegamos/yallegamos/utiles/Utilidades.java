@@ -34,46 +34,46 @@ public class Utilidades {
         float valor = 0;
 
         switch (numero) {
-            case 1:
+            case 0:
                 valor = 100;
                 break;
-            case 2:
+            case 1:
                 valor = 200;
                 break;
-            case 3:
+            case 2:
                 valor = 400;
                 break;
-            case 4:
+            case 3:
                 valor = 800;
                 break;
-            case 5:
+            case 4:
                 valor = 1000;
                 break;
-            case 6:
+            case 5:
                 valor = 1500;
                 break;
-            case 7:
+            case 6:
                 valor = 2000;
                 break;
-            case 8:
+            case 7:
                 valor = 2500;
                 break;
-            case 9:
+            case 8:
                 valor = 3000;
                 break;
-            case 10:
+            case 9:
                 valor = 3500;
                 break;
-            case 11:
+            case 10:
                 valor = 4000;
                 break;
-            case 12:
+            case 11:
                 valor = 4500;
                 break;
-            case 13:
+            case 12:
                 valor = 5000;
                 break;
-            case 14:
+            case 13:
                 valor = 10000;
                 break;
 

@@ -18,8 +18,8 @@ public final class Constantes {
     public static final String PROCESADA    = "PROCESADA";
     public static final String INACTIVA     = "INACTIVA";
 
-    public static final int RANGO_MAXIMO    = 14;
-    public static final int RANGO_STANDAR   = 5;
+    public static final int RANGO_MAXIMO    = 13;
+    public static final int RANGO_STANDAR   = 4;
     public static long UPDATE_INTERVAL_IN_MILLISECONDS            = 10000;
     public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS    = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
