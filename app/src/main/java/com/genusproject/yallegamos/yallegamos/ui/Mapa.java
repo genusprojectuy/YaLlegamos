@@ -978,7 +978,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public String ObtenerTextoRango(int rango){
         String tRango = "";
 
-        if(rango < 5)
+        if(rango < 4)
         {
             tRango =  Float.toString(utilidades.ToMetro(rango)) + " mt";
         }
