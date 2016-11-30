@@ -669,8 +669,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             final TextView txtRango         = (TextView) layout.findViewById(R.id.txt_SeekRango);
 
             String texto    = "Rango: " + ObtenerTextoRango(alerta.getRango());
-            texto           += " Distancia del destino: " + df.format(alerta.getDistancia());
-            texto           += " Estado: " + alerta.getEstado();
 
             txtRango.setText(texto);
             yourDialogSeekBar.setMax(RANGO_MAXIMO);
@@ -720,8 +718,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                     String texto    = "Rango: " + ObtenerTextoRango(seekBar.getProgress());
-                    texto           += " Distancia del destino: " + df.format(finalAlerta.getDistancia());
-                    texto           += " Estado: " + finalAlerta.getEstado();
+                    //texto           += " Distancia del destino: " + df.format(finalAlerta.getDistancia());
+                   // texto           += " Estado: " + finalAlerta.getEstado();
 
                     txtRango.setText(texto);
                 }

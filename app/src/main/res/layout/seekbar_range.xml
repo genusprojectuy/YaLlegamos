@@ -6,12 +6,34 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/textViewwww"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Titulo de la ubicacion"
-        android:textSize="18sp" />
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textViewwww"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Minas 1994"
+            android:textColor="#0097a7"
+            android:textSize="18sp" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColorLink="@color/cast_intro_overlay_button_background_color" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="3dp"
+        android:background="#0097a7" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -20,16 +42,17 @@
 
 
         <TextView
-            android:id="@+id/textViewwqe"
+            android:id="@+id/textViewwqweqwe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rango" />
+            android:layout_marginRight="8dp"
+            android:text="Distancia Restante:" />
 
         <TextView
-            android:id="@+id/textViewasd"
+            android:id="@+id/textViewassfsdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2km" />
+            android:text="50km" />
 
     </LinearLayout>
 
@@ -43,31 +66,40 @@
 
     <SeekBar
         android:id="@+id/sb_rango"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/txt_SeekRango"></SeekBar>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:orientation="horizontal">
+
 
         <Button
             android:id="@+id/btn_Alarma_Aceptar"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
-            android:text="Aceptar"></Button>
+            android:text="Aceptar"
+            android:textColor="#0097a7" />
 
         <Button
             android:id="@+id/btn_Alarma_Eliminar"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_toEndOf="@+id/btn_Alarma_Aceptar"
-            android:text="Eliminar" />
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:text="Eliminar"
+            android:textColor="#0097a7" />
+
 
     </LinearLayout>
 
