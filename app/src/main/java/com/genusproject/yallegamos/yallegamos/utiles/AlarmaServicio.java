@@ -306,7 +306,7 @@ public class AlarmaServicio extends IntentService{
             NotificationCompat.Builder mNot_Llegada = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("Ya llegamos!")
                     .setContentText("Estas llegando a: " + alerta.getDireccion())
-                    .setSmallIcon(R.mipmap.ic_launcher);
+                    .setSmallIcon(R.mipmap.ic_notificacion);
 
             Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
             PendingIntent contIntent    = PendingIntent.getActivity(getApplicationContext(), 0, notIntent, 0);
@@ -329,7 +329,7 @@ public class AlarmaServicio extends IntentService{
             mNotifyBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("Iniciando viaje")
                     .setContentText("Buscando el destino más proximo.")
-                    .setSmallIcon(R.mipmap.ic_launcher);
+                    .setSmallIcon(R.mipmap.ic_notificacion);
 
             Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
             PendingIntent contIntent    = PendingIntent.getActivity(getApplicationContext(), 0, notIntent, 0);
