@@ -11,6 +11,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Random;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
+
 /**
  * Created by alvar on 10/10/2016.
  */
@@ -189,4 +191,19 @@ public class Utilidades {
         Log.e(TAG + t, msg);
     }
 
+
+    public String Km_Mt(float valor)
+    {
+
+        Double distanciaA       = (double) Math.round(valor);
+
+        if(valor < 1000)
+        {
+            return DOS_DECIMALES.format(distanciaA) + "mt";
+        }
+        else
+        {
+            return DOS_DECIMALES.format(distanciaA / 1000) + "km";
+        }
+    }
 }

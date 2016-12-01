@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.genusproject.yallegamos.yallegamos.R;
@@ -88,6 +89,7 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_ARE
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PADDING;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PROCESADA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_MAXIMO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.RANGO_STANDAR;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
@@ -549,18 +551,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                         LatLng origen       = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                         LatLng destino      = new LatLng(Double.valueOf(alerta.getLatitud()), Double.valueOf(alerta.getLongitud()));
 
-                        String tDistanciaA      = "";
                         Float  _distanciaA      = utilidades.DistanceTo(origen, destino);
-                        Double distanciaA       = (double) Math.round(_distanciaA);
-
-                        if(distanciaA < 1000)
-                        {
-                            tDistanciaA = df.format(distanciaA) + "mt";
-                        }
-                        else
-                        {
-                            tDistanciaA = df.format(distanciaA / 1000) + "km";
-                        }
+                        String tDistanciaA      = utilidades.Km_Mt(_distanciaA);
 
                         tvDist.setText(tDistanciaA);
                         tvAddress.setText(address);
@@ -661,20 +653,54 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             final View layout       = inflater.inflate(R.layout.seekbar_range, (ViewGroup) findViewById(R.id.your_dialog_root_element));
 
 
+
             yourDialog.setContentView(layout);
 
             Button btnAlarmaAceptar         = (Button) layout.findViewById(R.id.btn_Alarma_Aceptar);
             Button btnAlarmaEliminar        = (Button) layout.findViewById(R.id.btn_Alarma_Eliminar);
             final SeekBar yourDialogSeekBar = (SeekBar) layout.findViewById(R.id.sb_rango);
             final TextView txtRango         = (TextView) layout.findViewById(R.id.txt_SeekRango);
+            TextView txt_d_dst              = (TextView) layout.findViewById(R.id.txt_d_distancia);
+            TextView txt_d_dir              = (TextView) layout.findViewById(R.id.txt_d_Direccion);
+            Switch sw_activa                = (Switch) layout.findViewById(R.id.switch_d_activa);
 
-            String texto    = "Rango: " + ObtenerTextoRango(alerta.getRango());
+            LatLng origen       = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            LatLng destino      = new LatLng(Double.valueOf(alerta.getLatitud()), Double.valueOf(alerta.getLongitud()));
 
-            txtRango.setText(texto);
+            Float  _distanciaA      = utilidades.DistanceTo(origen, destino);
+            String tDistanciaA      = utilidades.Km_Mt(_distanciaA);
+
+            txt_d_dst.setText(tDistanciaA);
+            txtRango.setText("Rango: " + ObtenerTextoRango(alerta.getRango()));
+            txt_d_dir.setText(alerta.getDireccion());
+
+            if(alerta.getEstado().equals(PENDIENTE))
+            {
+                sw_activa.setChecked(true);
+            }
+            else
+            {
+                sw_activa.setChecked(false);
+            }
+
             yourDialogSeekBar.setMax(RANGO_MAXIMO);
             yourDialogSeekBar.setProgress(alerta.getRango());
 
             final Alerta finalAlerta = alerta;
+
+            sw_activa.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b)
+                    {
+                        finalAlerta.setEstado(PENDIENTE);
+                    }
+                    else
+                    {
+                        finalAlerta.setEstado(PROCESADA);
+                    }
+                }
+            });
 
             btnAlarmaAceptar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -696,8 +722,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                     yourDialog.cancel();
                     marker.hideInfoWindow();
 
-                    CargarAlertas();
-                    CargarOpcionesMenu();
+                    //CargarAlertas();
+                    //CargarOpcionesMenu();
+                    DibujarMarcadores();
 
                 }
             });
@@ -733,7 +760,15 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 }
             });
 
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(yourDialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+
             yourDialog.show();
+
+            yourDialog.getWindow().setAttributes(lp);
+
         }
     }
 
@@ -894,21 +929,27 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                             //mO.icon(BitmapDescriptorFactory.defaultMarker(utilidades.ColorToHue(areaColor)));
                             Bitmap bitmap = getBitmap(this.getApplicationContext(), R.drawable.ic_marcadoralerta);
+                            if(unaAlerta.getEstado().equals(PROCESADA))
+                            {
+                                bitmap = getBitmap(this.getApplicationContext(), R.drawable.ic_marcadoralerta_procesada);
+                            }
                             mO.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                             Marker m = mMap.addMarker(mO);
                             m.setTag(unaAlerta.get_ID());
 
 
+                            if(unaAlerta.getEstado().equals(PENDIENTE)) {
+                                CircleOptions circleOptions = new CircleOptions()
+                                        .center(m.getPosition())
+                                        .fillColor(areaColor)
+                                        .strokeColor(bordeColor)
+                                        .strokeWidth(BORDER_WIDTH)
+                                        .radius(utilidades.ToMetro(unaAlerta.getRango()));
+                                Circle circulo = mMap.addCircle(circleOptions);
 
-                            CircleOptions circleOptions = new CircleOptions()
-                                    .center(m.getPosition())
-                                    .fillColor(areaColor)
-                                    .strokeColor(bordeColor)
-                                    .strokeWidth(BORDER_WIDTH)
-                                    .radius(utilidades.ToMetro(unaAlerta.getRango()));
-                            Circle circulo = mMap.addCircle(circleOptions);
+                                lstCirculos.add(new c_Circulo(circulo, unaAlerta.get_ID()));
+                            }
 
-                            lstCirculos.add(new c_Circulo(circulo, unaAlerta.get_ID()));
                             lstMarcadores.add(m);
                             cameraBuilder.include(m.getPosition());
                         }

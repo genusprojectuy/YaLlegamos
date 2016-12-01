@@ -12,7 +12,7 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/textViewwww"
+            android:id="@+id/txt_d_Direccion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Minas 1994"
@@ -20,7 +20,7 @@
             android:textSize="18sp" />
 
         <Switch
-            android:id="@+id/switch1"
+            android:id="@+id/switch_d_activa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -42,14 +42,14 @@
 
 
         <TextView
-            android:id="@+id/textViewwqweqwe"
+            android:id="@+id/txt_d_dsc_distancia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:text="Distancia Restante:" />
 
         <TextView
-            android:id="@+id/textViewassfsdd"
+            android:id="@+id/txt_d_distancia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="50km" />

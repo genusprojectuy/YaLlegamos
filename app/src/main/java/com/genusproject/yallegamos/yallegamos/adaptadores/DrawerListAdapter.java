@@ -66,13 +66,13 @@ public class DrawerListAdapter extends ArrayAdapter {
                 if(b)
                 {
                     item.setActiva("SI");
-                    item.setEstado(Constantes.PENDIENTE);
+                    //item.setEstado(Constantes.PENDIENTE);
                     alertaT.Update(item);
                 }
                 else
                 {
                     item.setActiva("NO");
-                    item.setEstado(Constantes.INACTIVA);
+                    //item.setEstado(Constantes.PROCESADA);
                     alertaT.Update(item);
                 }
 

@@ -2,6 +2,9 @@ package com.genusproject.yallegamos.yallegamos.utiles;
 
 import android.util.Log;
 
+import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -12,7 +15,7 @@ public class Observado extends Observable {
 
     private static Observado instancia;
     private boolean alarmasActivas;
-    private String TAG = "OBSERVADO";
+    private String TAG = this.getClass().getSimpleName().toUpperCase();
     private Utilidades utilidades = Utilidades.getInstance();
 
     private Observado(){
@@ -36,5 +39,7 @@ public class Observado extends Observable {
         notifyObservers(alarmasActivas);
 
     }
+
+
 
 }
