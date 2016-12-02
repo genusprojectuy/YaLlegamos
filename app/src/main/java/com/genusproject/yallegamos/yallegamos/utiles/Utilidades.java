@@ -2,6 +2,8 @@ package com.genusproject.yallegamos.yallegamos.utiles;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Vibrator;
 import android.util.Log;
@@ -9,6 +11,8 @@ import android.util.Log;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
@@ -96,67 +100,11 @@ public class Utilidades {
         return locOrigen.distanceTo(locDestino);
     }
 
-    public int RandomColor(int opacidad){
-        int rColor  = 0;
-        int START   = 1;
-        int END     = 10;
-
-        Random randomGenerator  = new Random();
-
-        long range          = (long) END - (long) START + 1;
-        long fraction       = (long)(range * randomGenerator.nextDouble());
-        int randomNumber    =  (int)(fraction + START);
-
-        switch(randomNumber)
-        {
-            case 1:
-                rColor = Color.BLACK;
-                break;
-            case 2:
-                rColor = Color.BLUE;
-                break;
-            case 3:
-                rColor = Color.CYAN;
-                break;
-            case 4:
-                rColor = Color.DKGRAY;
-                break;
-            case 5:
-                rColor = Color.GRAY;
-                break;
-            case 6:
-                rColor = Color.GREEN;
-                break;
-            case 7:
-                rColor = Color.LTGRAY;
-                break;
-            case 8:
-                rColor = Color.MAGENTA;
-                break;
-            case 9:
-                rColor = Color.RED;
-                break;
-            case 10:
-                rColor = Color.YELLOW;
-                break;
-        }
-
-        rColor = Color.argb(opacidad, Color.red(rColor), Color.green(rColor), Color.blue(rColor));
-
-        return rColor;
-    }
-
     public int ColorOpacidad(int rColor, int opacidad){
 
         rColor = Color.argb(opacidad, Color.red(rColor), Color.green(rColor), Color.blue(rColor));
 
         return rColor;
-    }
-
-    public float ColorToHue(int pColor){
-        float rColor[] = new float[3];
-        Color.RGBToHSV(Color.red(pColor), Color.green(pColor), Color.blue(pColor), rColor);
-        return rColor[0];
     }
 
     public void Vibrar(int intervalo, Context context){
@@ -168,23 +116,6 @@ public class Utilidades {
 
     }
 
-    public void VibrarAlarma(long [] patron, Context context)
-    {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        //long [] patron = {0, 500, 300, 1000, 500};
-        if(v.hasVibrator())
-        {
-            v.vibrate(patron,3);
-        }
-    }
-
-    public void DetenerVibracion(Context context)
-    {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.cancel();
-
-    }
-
 
     public void MostrarMensaje(String t, String msg)
     {
@@ -192,8 +123,7 @@ public class Utilidades {
     }
 
 
-    public String Km_Mt(float valor)
-    {
+    public String Km_Mt(float valor){
 
         Double distanciaA       = (double) Math.round(valor);
 
@@ -205,5 +135,59 @@ public class Utilidades {
         {
             return DOS_DECIMALES.format(distanciaA / 1000) + "km";
         }
+    }
+
+    public String DevolverDirecciones(Context context, LatLng latLng, TipoDireccion tDir){
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String retorno = "";
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            switch (tDir)
+            {
+                case DIRECCION: retorno = addresses.get(0).getAddressLine(0);
+                    break;
+                case CIUDAD: retorno = addresses.get(0).getLocality();
+                    break;
+                case ESTADO: retorno = addresses.get(0).getAdminArea();
+                    break;
+                case CODIGO_POSTAL: retorno = addresses.get(0).getPostalCode();
+                    break;
+                case KNOWN_NAME: retorno = addresses.get(0).getFeatureName();
+                    break;
+                case PAIS: retorno = addresses.get(0).getCountryName();
+                    break;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            this.MostrarMensaje(TAG, ex.getLocalizedMessage());
+        }
+
+        return retorno;
+    }
+
+    public LatLng DevolverLatLangDeDireccion(Context context, String direccion){
+        LatLng latLng = new LatLng(0,0);
+        try {
+            Geocoder geocoder = new Geocoder(context);
+            List<Address> addresses;
+            String address = direccion;
+            addresses = geocoder.getFromLocationName(address, 1);
+            if (addresses.size() > 0) {
+                double latitude = addresses.get(0).getLatitude();
+                double longitude = addresses.get(0).getLongitude();
+                latLng = new LatLng(latitude, longitude);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.MostrarMensaje(TAG, ex.getLocalizedMessage());
+        }
+        return  latLng;
     }
 }

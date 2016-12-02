@@ -18,7 +18,7 @@ public final class Constantes {
 
     public static final String PENDIENTE    = "PENDIENTE";
     public static final String PROCESADA    = "PROCESADA";
-//    public static final String INACTIVA     = "INACTIVA";
+    public static final String ACTIVA       = "SI";
 
     public static final int RANGO_MAXIMO    = 13;
     public static final int RANGO_STANDAR   = 4;
@@ -38,9 +38,12 @@ public final class Constantes {
     public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 
     public static int MAPA_PADDING = 200;
+    public static int MAPA_ZOOM = 15;
 
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
 
+    public static boolean SIN_NOTIFICAR     = false;
+    public static boolean NOTIFICAR         = true;
 
 
 }
