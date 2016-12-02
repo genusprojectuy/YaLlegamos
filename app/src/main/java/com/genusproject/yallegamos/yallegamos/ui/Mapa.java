@@ -1,7 +1,6 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -11,18 +10,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
-import android.graphics.drawable.VectorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -30,9 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,14 +36,14 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.adaptadores.DrawerListAdapter;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.logica.ListaAlertas;
-import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
+import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.utiles.AlarmaServicio;
-import com.genusproject.yallegamos.yallegamos.utiles.Observado;
 import com.genusproject.yallegamos.yallegamos.utiles.TipoDireccion;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
@@ -78,15 +67,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.wearable.internal.ChannelSendFileResponse;
 
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OPACIDAD;
@@ -132,8 +117,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private EditText etSearch;
     private Utilidades utilidades;
     private Button btnIniciarViaje;
-    private boolean servicioActivo = false;
-    private ListaAlertas o_ListaAlertas;
+    private Observado_ListaAlertas o_Observado_ListaAlertas;
+    private  ListaAlertas c_ListaAlerta;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -145,6 +130,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapa_matias);
+
+        utilidades = Utilidades.getInstance();
 
         ComprobarPermisos();
 
@@ -163,7 +150,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         ImageButton btnSearch = (ImageButton) findViewById(R.id.mapa_btnSearch);
         ImageButton boton = (ImageButton) findViewById(R.id.btn_DrawOpen);
 
-        utilidades = Utilidades.getInstance();
 
         //-----------------------------------------------------------------------------------------------
         //SETEAR EVENTOS
@@ -200,15 +186,15 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         //-----------------------------------------------------------------------------------------------
 
+        o_Observado_ListaAlertas = Observado_ListaAlertas.getInstance(this);
+        o_Observado_ListaAlertas.addObserver(this);
+        lstAlerta = o_Observado_ListaAlertas.getLstAlerta();
+        utilidades.MostrarMensaje(TAG, "Cargando lista, cantidad: " + lstAlerta.size());
+
         buildGoogleApiClient();
         updateValuesFromBundle(savedInstanceState);
         ArmarMenu();
-
-        o_ListaAlertas = ListaAlertas.getInstance(this);
-        o_ListaAlertas.addObserver(this);
-        lstAlerta = o_ListaAlertas.getLstAlerta();
-        utilidades.MostrarMensaje(TAG, "Cargando lista, cantidad: " + lstAlerta.size());
-
+        this.ManejarBoton();
 
     }
 
@@ -242,9 +228,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         if (client.isConnected()) {
             startLocationUpdates();
+            o_Observado_ListaAlertas.addObserver(this);
         }
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("PRUEBA"));
 
     }
 
@@ -254,9 +240,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
         if (client.isConnected()) {
             stopLocationUpdates();
+            o_Observado_ListaAlertas.deleteObserver(this);
         }
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(BReceiver);
     }
 
     @Override
@@ -392,31 +378,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void onInfoWindowClick(final Marker marker) {
         MostrarInfoView(marker);
     }
-
-    private BroadcastReceiver BReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //put here whaterver you want your activity to do with the intent received
-
-            boolean pr = intent.getBooleanExtra("success", false);
-            if(pr)
-            {
-                utilidades.MostrarMensaje(TAG, "Prueba " + pr);
-                btnIniciarViaje.setText("CANCELAR");
-                servicioActivo = true;
-            }
-            else
-            {
-                servicioActivo = false;
-                btnIniciarViaje.setText("INICIAR");
-            }
-        }
-
-    };
-
-
-
     //<<<<<------------------------------------------------------------------------------------------
 
     //-----------------------------------------------------------------------------------------------
@@ -463,7 +424,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                     v = getLayoutInflater().inflate(R.layout.windowlayout_llegar, null);
 
-                    Alerta alerta = o_ListaAlertas.DevolverAlerta((Long) valor);
+                    Alerta alerta = o_Observado_ListaAlertas.DevolverAlerta((Long) valor);
 
                         TextView tvAddress = (TextView) v.findViewById(R.id.txt_address);
                         TextView tvRango = (TextView) v.findViewById(R.id.txt_Alarma_Rango);
@@ -474,7 +435,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                         tvDist.setText(utilidades.Km_Mt(utilidades.DistanceTo(origen, destino)));
                         tvAddress.setText(utilidades.DevolverDirecciones(Mapa.this, destino, TipoDireccion.DIRECCION));
-                        tvRango.setText(ObtenerTextoRango(alerta.getRango()));
+                        tvRango.setText(utilidades.ObtenerTextoRango(alerta.getRango()));
 
                 } else {
                     v = getLayoutInflater().inflate(R.layout.windowlayout, null);
@@ -496,7 +457,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
     public void MoverCamaraTodosMarcadores(){
 
-        if (o_ListaAlertas.ExistenAlertasActivas()) {
+        if (o_Observado_ListaAlertas.ExistenAlertasActivas()) {
             cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
             mMap.moveCamera(cu);
             mMap.animateCamera(cu);
@@ -705,7 +666,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 utilidades.Vibrar(VIBRAR_LONG, getApplicationContext());
                 Alerta yourData = lstAlerta.get(position);
-                MostrarAlertaEditable(yourData);
+                MostrarAlertaEditable(yourData.get_ID());
                 return false;
             }
         });
@@ -734,7 +695,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         alerta.setActiva(ACTIVA);
         alerta.setDistancia(utilidades.DistanceTo(origen, arg0));
         alerta.setEstado(PENDIENTE);
-        alerta.set_ID(o_ListaAlertas.AddAlerta(alerta));
+        alerta.set_ID(o_Observado_ListaAlertas.AddAlerta(alerta));
 
         DevolverMarcador(alerta.get_ID()).showInfoWindow();
 
@@ -742,7 +703,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void MostrarAlertaEditable(Object valor){
-        Alerta alerta           = o_ListaAlertas.DevolverAlerta((Long) valor);
+        Alerta alerta           = o_Observado_ListaAlertas.DevolverAlerta((Long) valor);
         final Dialog yourDialog = new Dialog(Mapa.this);
         LayoutInflater inflater = (LayoutInflater) Mapa.this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View layout       = inflater.inflate(R.layout.seekbar_range, (ViewGroup) findViewById(R.id.your_dialog_root_element));
@@ -766,7 +727,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         String tDistanciaA      = utilidades.Km_Mt(_distanciaA);
 
         txt_d_dst.setText(tDistanciaA);
-        txtRango.setText("Rango: " + ObtenerTextoRango(alerta.getRango()));
+        txtRango.setText("Rango: " + utilidades.ObtenerTextoRango(alerta.getRango()));
         txt_d_dir.setText(alerta.getDireccion());
 
         if(alerta.getEstado().equals(PENDIENTE))
@@ -812,7 +773,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                     }
                 }
                 finalAlerta.setRango(yourDialogSeekBar.getProgress());
-                o_ListaAlertas.ModAlerta(finalAlerta, NOTIFICAR);
+                o_Observado_ListaAlertas.ModAlerta(finalAlerta, NOTIFICAR);
 
                 yourDialog.cancel();
                 DevolverMarcador(finalAlerta.get_ID()).hideInfoWindow();
@@ -823,7 +784,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         btnAlarmaEliminar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                o_ListaAlertas.DelAlerta(finalAlerta);
+                o_Observado_ListaAlertas.DelAlerta(finalAlerta);
                 yourDialog.cancel();
                 //DevolverMarcador(finalAlerta.get_ID()).hideInfoWindow();
             }
@@ -832,7 +793,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         yourDialogSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                String texto    = "Rango: " + ObtenerTextoRango(seekBar.getProgress());
+                String texto    = "Rango: " + utilidades.ObtenerTextoRango(seekBar.getProgress());
                 txtRango.setText(texto);
             }
 
@@ -856,6 +817,17 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
     }
 
+    private void ManejarBoton(){
+        utilidades.MostrarMensaje(TAG, "Manejar boton: " + o_Observado_ListaAlertas.ServicioActivo());
+        if(o_Observado_ListaAlertas.ServicioActivo())
+        {
+            btnIniciarViaje.setText("CANCELAR");
+        }
+        else
+        {
+            btnIniciarViaje.setText("INICIAR VIAJE");
+        }
+    }
 
     public void BuscarDireccion() {
 
@@ -881,47 +853,42 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void ManejarServicio(){
         Intent mServiceIntent       = new Intent(this, AlarmaServicio.class);
 
-        if (servicioActivo)
+        if (o_Observado_ListaAlertas.ServicioActivo())
         {
-            utilidades.MostrarMensaje(TAG, "Detener servicio");
+            utilidades.MostrarMensaje(TAG, "Detener servicio " + AlarmaServicio.class.getCanonicalName());
 
+            o_Observado_ListaAlertas.SetServicioActivo(false);
             //stopService(mServiceIntent);
-            stopService(new Intent(".utiles.AlarmaServicio"));
 
         }
-        else
-        {
-            utilidades.MostrarMensaje(TAG,"Iniciar servicio");
-            startService(mServiceIntent);
+        else {
+
+            utilidades.MostrarMensaje(TAG, "Iniciar servicio");
+            if (o_Observado_ListaAlertas.ExistenAlertasActivasSinProcesar()) {
+                startService(mServiceIntent);
+            }else
+            {
+
+                CharSequence text = "No tiene alertas activas";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+                toast.show();
+            }
 
         }
-    }
-
-    public String ObtenerTextoRango(int rango){
-        String tRango = "";
-
-        if(rango < 4)
-        {
-            tRango =  Float.toString(utilidades.ToMetro(rango)) + " mt";
-        }
-        else
-        {
-            tRango =  Float.toString(utilidades.ToKm(rango)) + " km";
-        }
-
-        return tRango;
     }
 
     public void ActualizarAlertasDistancia(){
         if(mCurrentLocation != null) {
-            if (!servicioActivo) {
+            if (!o_Observado_ListaAlertas.ServicioActivo()) {
                 LatLng origen = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
                 if (lstAlerta != null) {
                     for (Alerta unaAlerta : lstAlerta) {
                         LatLng destino = new LatLng(Double.valueOf(unaAlerta.getLatitud()), Double.valueOf(unaAlerta.getLongitud()));
                         unaAlerta.setDistancia(utilidades.DistanceTo(origen, destino));
-                        o_ListaAlertas.ModAlerta(unaAlerta, SIN_NOTIFICAR);
+                        o_Observado_ListaAlertas.ModAlerta(unaAlerta, SIN_NOTIFICAR);
                     }
                 }
             }
@@ -942,8 +909,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
     }
 
-    private Marker DevolverMarcador(long ID)
-    {
+    private Marker DevolverMarcador(long ID){
         for(Marker mrkr: lstMarcadores)
         {
             if (mrkr.getTag().equals(ID))
@@ -960,15 +926,21 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     //-----------------------------------------------------------------------------------------------
     @Override
     public void update(Observable o, Object arg) {
+        c_ListaAlerta = (ListaAlertas) arg;
 
-        lstAlerta = (List<Alerta>) arg;
-        utilidades.MostrarMensaje(TAG, "Valor observer cambiado, tamaño de lista: " + lstAlerta.size());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lstAlerta = c_ListaAlerta.getLstAlerta();
+                utilidades.MostrarMensaje(TAG, "Valor observer cambiado, tamaño de lista: " + lstAlerta.size());
 
-        this.alarmasActivas      = o_ListaAlertas.ExistenAlertasActivas();
+                alarmasActivas = o_Observado_ListaAlertas.ExistenAlertasActivas();
 
-        this.CargarOpcionesMenu();
-        this.DibujarMarcadores();
-
+                CargarOpcionesMenu();
+                DibujarMarcadores();
+                ManejarBoton();
+            }
+        });
     }
 
 

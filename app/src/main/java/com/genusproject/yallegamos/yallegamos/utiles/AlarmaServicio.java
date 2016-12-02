@@ -4,33 +4,26 @@ import android.Manifest;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.logica.ListaAlertas;
-import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
+import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -44,6 +37,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_DESTINO_ID;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_ID;
@@ -51,7 +45,6 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICAR
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PROCESADA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.UPDATE_INTERVAL_IN_MILLISECONDS;
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_PAT;
 
 
@@ -64,8 +57,8 @@ public class AlarmaServicio extends IntentService{
     private String TAG              = this.getClass().getSimpleName().toUpperCase();
     private List<Alerta> lstAlerta;
     private Utilidades utilidades = Utilidades.getInstance();
-    private ListaAlertas listaAlertas;
-
+    private Observado_ListaAlertas observadoListaAlertas;
+    private  ListaAlertas c_ListaAlerta;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -96,10 +89,10 @@ public class AlarmaServicio extends IntentService{
 
 
         utilidades.MostrarMensaje(TAG, "Iniciando servicio");
-        listaAlertas = ListaAlertas.getInstance(this.getApplicationContext());
+        observadoListaAlertas = Observado_ListaAlertas.getInstance(this.getApplicationContext());
 
         utilidades  = Utilidades.getInstance();
-        lstAlerta   = listaAlertas.getLstAlerta();
+        lstAlerta   = observadoListaAlertas.getLstAlerta();
 
         if (lstAlerta.size() > 0)
         {
@@ -124,7 +117,6 @@ public class AlarmaServicio extends IntentService{
     }
 
     public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer {
-        private DecimalFormat df                                = new DecimalFormat("###.##");
         private LocationRequest mLocationRequest;
         private Location mCurrentLocation;
         private GoogleApiClient client;
@@ -132,8 +124,9 @@ public class AlarmaServicio extends IntentService{
         private NotificationCompat.Builder mNotifyBuilder;
 
         public MyLocationListener(){
-            listaAlertas.addObserver(this);
-            sendBroadcast(true);
+            observadoListaAlertas.addObserver(this);
+
+            observadoListaAlertas.SetServicioActivo(true);
 
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             ArmarNotificacion();
@@ -150,13 +143,21 @@ public class AlarmaServicio extends IntentService{
 
         @Override
         public void update(Observable o, Object arg) {
-            lstAlerta = (List<Alerta>) arg;
-            utilidades.MostrarMensaje(TAG, "Valor observer cambiado, tamaño de lista: " + lstAlerta.size());
+            c_ListaAlerta   = (ListaAlertas) arg;
+            lstAlerta       = c_ListaAlerta.getLstAlerta();
 
-            boolean var = listaAlertas.ExistenAlertasActivasSinProcesar();
-            if (!var) {
-                QuitarNotificacion();
+            boolean var = observadoListaAlertas.ExistenAlertasActivasSinProcesar();
+            if(observadoListaAlertas.ServicioActivo() && !var )
+            {
+                observadoListaAlertas.SetServicioActivo(false);
             }
+
+            if(!var || !observadoListaAlertas.ServicioActivo())
+            {
+                QuitarNotificacion();
+                FinalizarServicio();
+            }
+
         }
 
         @Override
@@ -228,11 +229,14 @@ public class AlarmaServicio extends IntentService{
             if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);// requestLocationUpdates(client, mLocationRequest, this);
+            if(client.isConnected())
+            {
+                LocationServices.FusedLocationApi.removeLocationUpdates(client, this);// requestLocationUpdates(client, mLocationRequest, this);
+            }
         }
 
         public void verificarAlertas(){
-            if(listaAlertas.ExistenAlertasActivasSinProcesar())
+            if(observadoListaAlertas.ExistenAlertasActivasSinProcesar())
             {
                 if(lstAlerta != null) {
                     if (lstAlerta.size() > 0) {
@@ -255,7 +259,7 @@ public class AlarmaServicio extends IntentService{
                             }
                         });
 
-                        if(listaAlertas.ExistenAlertasActivasSinProcesar())
+                        if(observadoListaAlertas.ExistenAlertasActivasSinProcesar())
                         {
                             ActualizarNotificacion();
                         }
@@ -269,25 +273,16 @@ public class AlarmaServicio extends IntentService{
             }
             else
             {
-                FinalizarServicio();
+                observadoListaAlertas.SetServicioActivo(false);
             }
         }
 
         public void FinalizarServicio(){
-
-            this.sendBroadcast(false);
-
-            stopServicio();
-            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+            stopLocationUpdates();
             client.disconnect();
-
+            stopServicio();
         }
 
-        private void sendBroadcast (boolean success){
-            Intent intent = new Intent ("PRUEBA"); //put the same message as in the filter you used in the activity when registering the receiver
-            intent.putExtra("success", success);
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-        }
 
         public Alerta CalcularDistancia(Alerta alerta){
 
@@ -295,14 +290,14 @@ public class AlarmaServicio extends IntentService{
             LatLng destino = new LatLng(Double.valueOf(alerta.getLatitud()), Double.valueOf(alerta.getLongitud()));
 
             alerta.setDistancia(utilidades.DistanceTo(origen, destino));
-            listaAlertas.ModAlerta(alerta, NOTIFICAR);
+            observadoListaAlertas.ModAlerta(alerta, NOTIFICAR);
 
             return alerta;
         }
 
         public void Notificar(Alerta alerta){
             alerta.setEstado(PROCESADA);
-            listaAlertas.ModAlerta(alerta, NOTIFICAR);
+            observadoListaAlertas.ModAlerta(alerta, NOTIFICAR);
 
             NotificationCompat.Builder mNot_Llegada = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("Ya llegamos!")
@@ -351,7 +346,7 @@ public class AlarmaServicio extends IntentService{
                         if (alerta.getActiva().equals(ACTIVA) && alerta.getEstado().equals(PENDIENTE)) {
 
                             mNotifyBuilder.setContentTitle("Distancia del punto mas cercano")
-                                    .setContentText("Distancia: " + df.format(alerta.getDistancia()));
+                                    .setContentText("Distancia: " + DOS_DECIMALES.format(alerta.getDistancia()));
 
                             mNotificationManager.notify(
                                     NOTIFICACION_ID,
@@ -368,9 +363,10 @@ public class AlarmaServicio extends IntentService{
         }
 
         public void QuitarNotificacion(){
-            mNotificationManager.cancel(NOTIFICACION_ID);
-
-            stopLocationUpdates();
+            if(mNotificationManager != null)
+            {
+                mNotificationManager.cancel(NOTIFICACION_ID);
+            }
 
         }
 

@@ -19,6 +19,7 @@ public final class Constantes {
     public static final String PENDIENTE    = "PENDIENTE";
     public static final String PROCESADA    = "PROCESADA";
     public static final String ACTIVA       = "SI";
+    public static final String INACTIVA     = "NO";
 
     public static final int RANGO_MAXIMO    = 13;
     public static final int RANGO_STANDAR   = 4;

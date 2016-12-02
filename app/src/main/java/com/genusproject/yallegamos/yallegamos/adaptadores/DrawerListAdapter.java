@@ -11,22 +11,30 @@ import android.widget.TextView;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 
 import java.util.List;
+import java.util.Observer;
+
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.INACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICAR;
 
 /**
  * Created by a.devotto on 09/09/2016.
  */
 
-public class DrawerListAdapter extends ArrayAdapter {
-    Utilidades utilidades;
+public class DrawerListAdapter extends ArrayAdapter{
+    private Utilidades utilidades;
+    private Observado_ListaAlertas o_Observado_ListaAlertas;
 
     public DrawerListAdapter(Context context, List<Alerta> alertas) {
         super(context, 0, alertas);
+        o_Observado_ListaAlertas = Observado_ListaAlertas.getInstance(context);
     }
 
     @Override
@@ -41,17 +49,15 @@ public class DrawerListAdapter extends ArrayAdapter {
         }
 
 
-        final alertaTabla alertaT = alertaTabla.getInstancia(getContext());
-
         TextView name   = (TextView) convertView.findViewById(R.id.lst_txt_name);
         TextView rango  = (TextView) convertView.findViewById(R.id.lst_txt_rango);
         Switch activa   = (Switch) convertView.findViewById(R.id.lst_switch);
         final Alerta item     = (Alerta) getItem(position);
 
         name.setText(item.getDireccion());
-        rango.setText(ObtenerTextoRango(item.getRango()));
+        rango.setText(utilidades.ObtenerTextoRango(item.getRango()));
 
-        if(item.getActiva().equals("SI"))
+        if(item.getActiva().equals(ACTIVA))
         {
             activa.setChecked(true);
         }
@@ -65,16 +71,14 @@ public class DrawerListAdapter extends ArrayAdapter {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
-                    item.setActiva("SI");
-                    //item.setEstado(Constantes.PENDIENTE);
-                    alertaT.Update(item);
+                    item.setActiva(ACTIVA);
                 }
                 else
                 {
-                    item.setActiva("NO");
-                    //item.setEstado(Constantes.PROCESADA);
-                    alertaT.Update(item);
+                    item.setActiva(INACTIVA);
                 }
+
+                o_Observado_ListaAlertas.ModAlerta(item, NOTIFICAR);
 
 
             }
@@ -83,19 +87,4 @@ public class DrawerListAdapter extends ArrayAdapter {
         return convertView;
     }
 
-    public String ObtenerTextoRango(int rango)
-    {
-        String tRango = "";
-
-        if(rango < 5)
-        {
-            tRango =  Float.toString(utilidades.ToMetro(rango)) + " mt";
-        }
-        else
-        {
-            tRango =  Float.toString(utilidades.ToKm(rango)) + " km";
-        }
-
-        return tRango;
-    }
 }

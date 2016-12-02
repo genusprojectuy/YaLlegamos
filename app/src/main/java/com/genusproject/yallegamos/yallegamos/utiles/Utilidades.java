@@ -190,4 +190,19 @@ public class Utilidades {
         }
         return  latLng;
     }
+
+    public String ObtenerTextoRango(int rango){
+        String tRango = "";
+
+        if(rango < 4)
+        {
+            tRango =  Float.toString(ToMetro(rango)) + " mt";
+        }
+        else
+        {
+            tRango =  Float.toString(ToKm(rango)) + " km";
+        }
+
+        return tRango;
+    }
 }
