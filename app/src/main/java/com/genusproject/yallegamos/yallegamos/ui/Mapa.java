@@ -228,7 +228,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         if (client.isConnected()) {
             startLocationUpdates();
-            o_Observado_ListaAlertas.addObserver(this);
+            //o_Observado_ListaAlertas.addObserver(this);
         }
 
 
@@ -240,7 +240,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
         if (client.isConnected()) {
             stopLocationUpdates();
-            o_Observado_ListaAlertas.deleteObserver(this);
+          //  o_Observado_ListaAlertas.deleteObserver(this);
         }
 
     }

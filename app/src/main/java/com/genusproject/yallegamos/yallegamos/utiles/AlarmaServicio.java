@@ -59,6 +59,8 @@ public class AlarmaServicio extends IntentService{
     private Utilidades utilidades = Utilidades.getInstance();
     private Observado_ListaAlertas observadoListaAlertas;
     private  ListaAlertas c_ListaAlerta;
+    private NotificationManager mNotificationManager;
+
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -76,18 +78,17 @@ public class AlarmaServicio extends IntentService{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        utilidades.MostrarMensaje(TAG, "Destruyendo");
+        QuitarNotificacion();
 
     }
 
     @Override
-    protected void onHandleIntent(Intent workIntent) {
-        // Gets data from the incoming Intent
-        //String dataString = workIntent.getDataString();
-        //...
-        // Do work here, based on the contents of dataString
-        //...
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
 
+        // If we get killed, after returning from here, restart
+        //return START_STICKY;
         utilidades.MostrarMensaje(TAG, "Iniciando servicio");
         observadoListaAlertas = Observado_ListaAlertas.getInstance(this.getApplicationContext());
 
@@ -103,7 +104,33 @@ public class AlarmaServicio extends IntentService{
         {
             onDestroy();
         }
+        return START_NOT_STICKY;
+    }
 
+    @Override
+    protected void onHandleIntent(Intent workIntent) {
+        // Gets data from the incoming Intent
+        //String dataString = workIntent.getDataString();
+        //...
+        // Do work here, based on the contents of dataString
+        //...
+
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
+    public void QuitarNotificacion(){
+        utilidades.MostrarMensaje(TAG, "Destruyendo 2");
+        if(mNotificationManager != null)
+        {
+            utilidades.MostrarMensaje(TAG, "Destruyendo 3");
+            mNotificationManager.cancel(NOTIFICACION_ID);
+        }
 
     }
 
@@ -120,7 +147,6 @@ public class AlarmaServicio extends IntentService{
         private LocationRequest mLocationRequest;
         private Location mCurrentLocation;
         private GoogleApiClient client;
-        private NotificationManager mNotificationManager;
         private NotificationCompat.Builder mNotifyBuilder;
 
         public MyLocationListener(){
@@ -362,13 +388,7 @@ public class AlarmaServicio extends IntentService{
 
         }
 
-        public void QuitarNotificacion(){
-            if(mNotificationManager != null)
-            {
-                mNotificationManager.cancel(NOTIFICACION_ID);
-            }
 
-        }
 
     }
 
