@@ -23,6 +23,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -149,6 +151,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         ImageButton boton = (ImageButton) findViewById(R.id.btn_DrawOpen);
 
 
+
         //-----------------------------------------------------------------------------------------------
         //SETEAR EVENTOS
         //-----------------------------------------------------------------------------------------------
@@ -170,6 +173,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         btnIniciarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Animation shake = AnimationUtils.loadAnimation(Mapa.this, R.anim.shake_nimacion);
+                btnIniciarViaje.startAnimation(shake);
                 ManejarServicio();
                 MoverCamaraTodosMarcadores();
             }
