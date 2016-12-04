@@ -41,6 +41,8 @@ public final class Constantes {
     public static int MAPA_PADDING = 200;
     public static int MAPA_ZOOM = 15;
 
+    public static int BOTON_DURACION = 1000;
+
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
 
     public static boolean SIN_NOTIFICAR     = false;

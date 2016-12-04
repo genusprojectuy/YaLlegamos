@@ -1,6 +1,9 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.Manifest;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -23,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -75,6 +80,7 @@ import java.util.List;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OPACIDAD;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_WIDTH;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BOTON_DURACION;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PADDING;
@@ -173,8 +179,14 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         btnIniciarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Animation shake = AnimationUtils.loadAnimation(Mapa.this, R.anim.shake_nimacion);
-                btnIniciarViaje.startAnimation(shake);
+
+                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(Mapa.this, R.animator.flip);
+
+                anim.setTarget(btnIniciarViaje);
+                anim.setDuration(BOTON_DURACION);
+
+                anim.start();
+
                 ManejarServicio();
                 MoverCamaraTodosMarcadores();
             }
