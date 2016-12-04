@@ -1,4 +1,4 @@
-package com.genusproject.yallegamos.yallegamos.utiles;
+package com.genusproject.yallegamos.yallegamos.logica;
 
 import android.Manifest;
 import android.app.IntentService;
@@ -9,18 +9,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
-import com.genusproject.yallegamos.yallegamos.logica.ListaAlertas;
-import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
+import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,7 +26,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -337,7 +333,7 @@ public class AlarmaServicio extends IntentService{
 
             long[] patron = VIBRAR_PAT;
             mNot_Llegada.setVibrate(patron);
-
+            mNot_Llegada.setAutoCancel(true);
             mNotificationManager.notify(NOTIFICACION_DESTINO_ID, mNot_Llegada.build());
 
             utilidades.MostrarMensaje(TAG, "Notificando llegada a destino");
