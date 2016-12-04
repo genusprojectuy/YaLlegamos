@@ -1,6 +1,7 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -180,12 +181,19 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             @Override
             public void onClick(View view) {
 
+               /*
+
                 AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(Mapa.this, R.animator.flip);
 
                 anim.setTarget(btnIniciarViaje);
                 anim.setDuration(BOTON_DURACION);
 
                 anim.start();
+*/
+
+                Animation shake = AnimationUtils.loadAnimation(Mapa.this, R.anim.shake_nimacion);
+                btnIniciarViaje.startAnimation(shake);
+
 
                 ManejarServicio();
                 MoverCamaraTodosMarcadores();
