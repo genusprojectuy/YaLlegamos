@@ -16,6 +16,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.appindexing.AppIndex;
@@ -32,7 +34,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICACION_DESTINO_ID;
@@ -121,10 +123,15 @@ public class AlarmaServicio extends IntentService{
     }
 
     public void QuitarNotificacion(){
-        utilidades.MostrarMensaje(TAG, "Destruyendo 2");
+
         if(mNotificationManager != null)
         {
-            utilidades.MostrarMensaje(TAG, "Destruyendo 3");
+            Viaje viaje = observadoListaAlertas.DevolverViaje();
+            if(viaje.getEstado().equals(EstadoViaje.EN_PROCESO))
+            {
+                viaje.setEstado(EstadoViaje.CANCELADO);
+                observadoListaAlertas.ModViaje(viaje);
+            }
             mNotificationManager.cancel(NOTIFICACION_ID);
         }
 
@@ -258,13 +265,18 @@ public class AlarmaServicio extends IntentService{
         }
 
         public void verificarAlertas(){
+            Viaje viaje = observadoListaAlertas.DevolverViaje();
+
             if(observadoListaAlertas.ExistenAlertasActivasSinProcesar())
             {
+                LatLng origen = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                observadoListaAlertas.ViajeAgregarLatLang(viaje, origen);
+
                 if(lstAlerta != null) {
                     if (lstAlerta.size() > 0) {
 
                         for (Alerta alerta : lstAlerta) {
-                            if (alerta.getActiva().equals(ACTIVA) && alerta.getEstado().equals(PENDIENTE)) {
+                            if (alerta.getActiva().equals(SI) && alerta.getEstado().equals(PENDIENTE)) {
                                 alerta = CalcularDistancia(alerta);
                                 if (alerta.getDistancia() <= utilidades.ToMetro(alerta.getRango())) {
                                     Notificar(alerta);
@@ -287,6 +299,9 @@ public class AlarmaServicio extends IntentService{
                         }
                         else
                         {
+                            viaje.setEstado(EstadoViaje.FINALIZADO);
+                            observadoListaAlertas.ModViaje(viaje);
+
                             QuitarNotificacion();
                         }
 
@@ -295,6 +310,8 @@ public class AlarmaServicio extends IntentService{
             }
             else
             {
+                viaje.setEstado(EstadoViaje.FINALIZADO);
+                observadoListaAlertas.ModViaje(viaje);
                 observadoListaAlertas.SetServicioActivo(false);
             }
         }
@@ -365,7 +382,7 @@ public class AlarmaServicio extends IntentService{
                 {
                     for(Alerta alerta : lstAlerta)
                     {
-                        if (alerta.getActiva().equals(ACTIVA) && alerta.getEstado().equals(PENDIENTE)) {
+                        if (alerta.getActiva().equals(SI) && alerta.getEstado().equals(PENDIENTE)) {
 
                             mNotifyBuilder.setContentTitle("Distancia del punto mas cercano")
                                     .setContentText("Distancia: " + DOS_DECIMALES.format(alerta.getDistancia()));

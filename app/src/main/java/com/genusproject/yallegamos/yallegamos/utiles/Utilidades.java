@@ -8,12 +8,11 @@ import android.location.Location;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.genusproject.yallegamos.yallegamos.ui.Mapa;
+import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
 

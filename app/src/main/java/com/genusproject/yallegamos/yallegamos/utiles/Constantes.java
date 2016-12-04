@@ -9,17 +9,11 @@ import java.text.DecimalFormat;
  */
 
 public final class Constantes {
-    public static final int SUCCESS_RESULT          = 0;
-    public static final int FAILURE_RESULT          = 1;
-    public static final String PACKAGE_NAME         = "com.genusproject.yallegamos.yallegamos"; //com.google.android.gms.location.sample.locationaddress
-    public static final String RECEIVER             = PACKAGE_NAME + ".RECEIVER";
-    public static final String RESULT_DATA_KEY      = PACKAGE_NAME + ".RESULT_DATA_KEY";
-    public static final String LOCATION_DATA_EXTRA  = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
 
     public static final String PENDIENTE    = "PENDIENTE";
     public static final String PROCESADA    = "PROCESADA";
-    public static final String ACTIVA       = "SI";
-    public static final String INACTIVA     = "NO";
+    public static final String SI = "SI";
+    public static final String NO = "NO";
 
     public static final int RANGO_MAXIMO    = 13;
     public static final int RANGO_STANDAR   = 4;
@@ -38,10 +32,11 @@ public final class Constantes {
 
     public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
 
-    public static int MAPA_PADDING = 200;
-    public static int MAPA_ZOOM = 15;
-
-    public static int BOTON_DURACION = 1000;
+    public static int MAPA_PADDING      = 200;
+    public static int MAPA_ZOOM         = 15;
+    public static int MAPA_LINEA_WIDTH  = 10;
+    public static int MAPA_LINEA_COLOR  = Color.BLUE;
+    public static int BOTON_DURACION    = 1000;
 
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
 

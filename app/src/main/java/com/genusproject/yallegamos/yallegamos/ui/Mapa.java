@@ -1,10 +1,6 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,10 +9,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -28,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -46,10 +41,12 @@ import android.widget.Toast;
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.adaptadores.DrawerListAdapter;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
 import com.genusproject.yallegamos.yallegamos.logica.ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.logica.AlarmaServicio;
-import com.genusproject.yallegamos.yallegamos.utiles.TipoDireccion;
+import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.genusproject.yallegamos.yallegamos.utiles.c_Circulo;
 import com.google.android.gms.appindexing.Action;
@@ -72,16 +69,19 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_LINEA_COLOR;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_LINEA_WIDTH;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_OPACIDAD;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BORDER_WIDTH;
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.BOTON_DURACION;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PADDING;
@@ -125,6 +125,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private Button btnIniciarViaje;
     private Observado_ListaAlertas o_Observado_ListaAlertas;
     private  ListaAlertas c_ListaAlerta;
+    private Polyline polyline;
 
 
     /**
@@ -529,7 +530,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
 
                     for (Alerta unaAlerta : lstAlerta) {
-                        if (unaAlerta.getActiva().equals(ACTIVA)) {
+                        if (unaAlerta.getActiva().equals(SI)) {
 
                             MarkerOptions mO    = new MarkerOptions();
                             LatLng latLng2      = new LatLng(Double.valueOf(unaAlerta.getLatitud()), Double.valueOf(unaAlerta.getLongitud()));
@@ -716,7 +717,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         alerta.setRango(RANGO_STANDAR);
         alerta.setLongitud(Double.toString(arg0.longitude));
         alerta.setLatitud(Double.toString(arg0.latitude));
-        alerta.setActiva(ACTIVA);
+        alerta.setActiva(SI);
         alerta.setDistancia(utilidades.DistanceTo(origen, arg0));
         alerta.setEstado(PENDIENTE);
         alerta.set_ID(o_Observado_ListaAlertas.AddAlerta(alerta));
@@ -842,7 +843,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     private void ManejarBoton(){
-        utilidades.MostrarMensaje(TAG, "Manejar boton: " + o_Observado_ListaAlertas.ServicioActivo());
         if(o_Observado_ListaAlertas.ServicioActivo())
         {
             btnIniciarViaje.setText("CANCELAR");
@@ -882,13 +882,19 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             utilidades.MostrarMensaje(TAG, "Detener servicio " + AlarmaServicio.class.getCanonicalName());
 
             o_Observado_ListaAlertas.SetServicioActivo(false);
-            //stopService(mServiceIntent);
 
         }
         else {
 
             utilidades.MostrarMensaje(TAG, "Iniciar servicio");
             if (o_Observado_ListaAlertas.ExistenAlertasActivasSinProcesar()) {
+
+                Viaje viaje = new Viaje();
+                viaje.setEstado(EstadoViaje.EN_PROCESO);
+                viaje.setFecha(new Date());
+                o_Observado_ListaAlertas.AddViaje(viaje);
+                o_Observado_ListaAlertas.ViajeAgregarLatLang(o_Observado_ListaAlertas.DevolverViaje(), new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+
                 startService(mServiceIntent);
             }else
             {
@@ -900,6 +906,31 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 toast.show();
             }
 
+        }
+    }
+
+    public void DibujarRecorrido(){
+        if(polyline!=null){
+            polyline.remove();
+        }
+        if(o_Observado_ListaAlertas.ServicioActivo()) {
+            Viaje viaje = o_Observado_ListaAlertas.DevolverViaje();
+
+            if (viaje != null) {
+                // Instantiates a new Polyline object and adds points to define a rectangle
+                PolylineOptions rectOptions = new PolylineOptions();
+
+                if(viaje.getRecorrido() != null) {
+                    for (LatLng latLng : viaje.getRecorrido()) {
+                        rectOptions.add(latLng);
+                    }
+
+                    polyline = mMap.addPolyline(rectOptions);
+                    polyline.setColor(MAPA_LINEA_COLOR);
+                    polyline.setWidth(MAPA_LINEA_WIDTH);
+                }
+
+            }
         }
     }
 
@@ -956,13 +987,13 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             @Override
             public void run() {
                 lstAlerta = c_ListaAlerta.getLstAlerta();
-                utilidades.MostrarMensaje(TAG, "Valor observer cambiado, tamaño de lista: " + lstAlerta.size());
 
                 alarmasActivas = o_Observado_ListaAlertas.ExistenAlertasActivas();
 
                 CargarOpcionesMenu();
                 DibujarMarcadores();
                 ManejarBoton();
+                DibujarRecorrido();
             }
         });
     }

@@ -1,10 +1,6 @@
 package com.genusproject.yallegamos.yallegamos.logica;
 
-import android.content.Context;
-
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
-import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
-import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 
 import java.util.List;
 

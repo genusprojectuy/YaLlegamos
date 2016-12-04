@@ -1,16 +1,18 @@
 package com.genusproject.yallegamos.yallegamos.logica;
 
 import android.content.Context;
-import android.view.View;
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
-import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
+import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.persistencia.PersistenciaBD;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 
 /**
@@ -20,10 +22,12 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE
 public class Observado_ListaAlertas extends Observable {
     private String TAG = this.getClass().getSimpleName().toUpperCase();
     private Context context;
-    private alertaTabla alertaT;
+    private PersistenciaBD alertaT;
     private ListaAlertas lstAlerta;
     private static Observado_ListaAlertas ourInstance;
     private Utilidades utilidades = Utilidades.getInstance();
+    private Viaje v;
+
 
     public static Observado_ListaAlertas getInstance(Context pContext) {
         if (ourInstance == null)
@@ -35,9 +39,9 @@ public class Observado_ListaAlertas extends Observable {
 
     private Observado_ListaAlertas(Context pContext) {
         this.context = pContext;
-        alertaT     = alertaTabla.getInstancia(context);
+        alertaT     = PersistenciaBD.getInstancia(context);
         lstAlerta   = ListaAlertas.getInstance();
-        lstAlerta.setLstAlerta(alertaT.DevolverAlertas());
+        lstAlerta.setLstAlerta(alertaT.AlertaDevolverLista());
         this.BuscarAlertasActivas();
         this.BuscarAlertasActivasSinProcesar();
         utilidades.MostrarMensaje(TAG, "Cargando lista, cantidad: " + lstAlerta.getLstAlerta().size());
@@ -50,7 +54,7 @@ public class Observado_ListaAlertas extends Observable {
 
     public long AddAlerta(Alerta alerta)
     {
-        alerta.set_ID(alertaT.AgregarRegistro(alerta));
+        alerta.set_ID(alertaT.AlertaAgregar(alerta));
         lstAlerta.getLstAlerta().add(alerta);
         Notificar();
 
@@ -59,7 +63,7 @@ public class Observado_ListaAlertas extends Observable {
 
     public void ModAlerta(Alerta alerta, boolean notificar)
     {
-        alertaT.Update(alerta);
+        alertaT.AlertaModificar(alerta);
         int posicion = 0;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
@@ -80,7 +84,7 @@ public class Observado_ListaAlertas extends Observable {
 
     public void DelAlerta(Alerta alerta)
     {
-        alertaT.EliminarRegistro(alerta.get_ID());
+        alertaT.AlertaEliminar(alerta.get_ID());
         int posicion = 0;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
@@ -95,7 +99,6 @@ public class Observado_ListaAlertas extends Observable {
 
         Notificar();
     }
-
 
     private void Notificar(){
 
@@ -112,7 +115,7 @@ public class Observado_ListaAlertas extends Observable {
         boolean AlertasActivas = false;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
-            if (unaAlerta.getActiva().equals(ACTIVA))
+            if (unaAlerta.getActiva().equals(SI))
             {
                 AlertasActivas = true;
                 break;
@@ -131,7 +134,7 @@ public class Observado_ListaAlertas extends Observable {
         boolean AlertasActivas = false;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
-            if (unaAlerta.getActiva().equals(ACTIVA) && unaAlerta.getEstado().equals(PENDIENTE))
+            if (unaAlerta.getActiva().equals(SI) && unaAlerta.getEstado().equals(PENDIENTE))
             {
                 AlertasActivas = true;
                 break;
@@ -147,7 +150,7 @@ public class Observado_ListaAlertas extends Observable {
     }
 
     public Alerta DevolverAlerta(long ID){
-        return alertaT.DevolverUnRegistro(ID);
+        return alertaT.AlertaDevolver(ID);
     }
 
     public void SetServicioActivo(boolean activo){
@@ -157,6 +160,37 @@ public class Observado_ListaAlertas extends Observable {
 
     public boolean ServicioActivo(){
         return lstAlerta.isServicioActivo();
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------------
+    //VIAJE
+    //-----------------------------------------------------------------------------------------------------------------------
+    public long AddViaje(Viaje viaje){
+        viaje.set_ID(alertaT.ViajeAgregar(viaje));
+        viaje.setRecorrido(new ArrayList<LatLng>());
+        this.v = viaje;
+        utilidades.MostrarMensaje(TAG, "Ingresando viaje " + viaje.toString());
+        return  viaje.get_ID();
+    }
+
+    public void ModViaje(Viaje viaje){
+        utilidades.MostrarMensaje(TAG, "Modificando viaje " + viaje.toString());
+        alertaT.ViajeModificar(viaje);
+    }
+
+    public void DelViaje(Viaje viaje){
+        alertaT.ViajeEliminar(viaje.get_ID());
+    }
+
+    public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
+        alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
+        viaje.getRecorrido().add(latLng);
+        v.getRecorrido().add(latLng);
+        return viaje;
+    }
+
+    public Viaje DevolverViaje(){
+        return v;
     }
 
 

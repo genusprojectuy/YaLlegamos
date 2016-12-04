@@ -12,16 +12,12 @@ import android.widget.TextView;
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
-import com.genusproject.yallegamos.yallegamos.persistencia.alertaTabla;
-import com.genusproject.yallegamos.yallegamos.ui.Mapa;
-import com.genusproject.yallegamos.yallegamos.utiles.Constantes;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 
 import java.util.List;
-import java.util.Observer;
 
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.ACTIVA;
-import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.INACTIVA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NOTIFICAR;
 
 /**
@@ -57,7 +53,7 @@ public class DrawerListAdapter extends ArrayAdapter{
         name.setText(item.getDireccion());
         rango.setText(utilidades.ObtenerTextoRango(item.getRango()));
 
-        if(item.getActiva().equals(ACTIVA))
+        if(item.getActiva().equals(SI))
         {
             activa.setChecked(true);
         }
@@ -71,11 +67,11 @@ public class DrawerListAdapter extends ArrayAdapter{
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
-                    item.setActiva(ACTIVA);
+                    item.setActiva(SI);
                 }
                 else
                 {
-                    item.setActiva(INACTIVA);
+                    item.setActiva(NO);
                 }
 
                 o_Observado_ListaAlertas.ModAlerta(item, NOTIFICAR);

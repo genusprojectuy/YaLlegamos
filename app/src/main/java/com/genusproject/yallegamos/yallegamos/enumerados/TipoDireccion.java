@@ -1,4 +1,4 @@
-package com.genusproject.yallegamos.yallegamos.utiles;
+package com.genusproject.yallegamos.yallegamos.enumerados;
 
 /**
  * Created by alvar on 01/12/2016.
