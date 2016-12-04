@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -120,6 +121,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private Observado_ListaAlertas o_Observado_ListaAlertas;
     private  ListaAlertas c_ListaAlerta;
 
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -196,6 +198,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         ArmarMenu();
         this.ManejarBoton();
 
+
     }
 
     //-----------------------------------------------------------------------------------------------
@@ -205,7 +208,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -400,6 +402,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 CrearAlerta(arg0);
             }
         });
+
     }
 
     public void CargarInfoViewAdapter() {
