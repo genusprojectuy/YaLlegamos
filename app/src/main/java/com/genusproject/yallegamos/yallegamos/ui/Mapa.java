@@ -574,6 +574,33 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         }
     }
+
+    public void DibujarRecorrido(){
+
+        //if(o_Observado_ListaAlertas.ServicioActivo()) {
+            Viaje viaje = o_Observado_ListaAlertas.DevolverViaje();
+
+            if (viaje != null) {
+                // Instantiates a new Polyline object and adds points to define a rectangle
+                PolylineOptions rectOptions = new PolylineOptions();
+
+                if(viaje.getRecorrido() != null) {
+                    if(polyline!=null){
+                        polyline.remove();
+                    }
+
+                    for (LatLng latLng : viaje.getRecorrido()) {
+                        rectOptions.add(latLng);
+                    }
+
+                    polyline = mMap.addPolyline(rectOptions);
+                    polyline.setColor(MAPA_LINEA_COLOR);
+                    polyline.setWidth(MAPA_LINEA_WIDTH);
+                }
+
+            }
+       // }
+    }
     //<<<<<------------------------------------------------------------------------------------------
 
 
@@ -895,6 +922,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 o_Observado_ListaAlertas.AddViaje(viaje);
                 o_Observado_ListaAlertas.ViajeAgregarLatLang(o_Observado_ListaAlertas.DevolverViaje(), new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
 
+                if(polyline!=null){
+                    polyline.remove();
+                }
+
                 startService(mServiceIntent);
             }else
             {
@@ -906,31 +937,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 toast.show();
             }
 
-        }
-    }
-
-    public void DibujarRecorrido(){
-        if(polyline!=null){
-            polyline.remove();
-        }
-        if(o_Observado_ListaAlertas.ServicioActivo()) {
-            Viaje viaje = o_Observado_ListaAlertas.DevolverViaje();
-
-            if (viaje != null) {
-                // Instantiates a new Polyline object and adds points to define a rectangle
-                PolylineOptions rectOptions = new PolylineOptions();
-
-                if(viaje.getRecorrido() != null) {
-                    for (LatLng latLng : viaje.getRecorrido()) {
-                        rectOptions.add(latLng);
-                    }
-
-                    polyline = mMap.addPolyline(rectOptions);
-                    polyline.setColor(MAPA_LINEA_COLOR);
-                    polyline.setWidth(MAPA_LINEA_WIDTH);
-                }
-
-            }
         }
     }
 
