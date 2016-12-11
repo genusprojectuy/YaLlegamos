@@ -17,8 +17,9 @@ public final class Constantes {
 
     public static final int RANGO_MAXIMO    = 13;
     public static final int RANGO_STANDAR   = 4;
-    public static long UPDATE_INTERVAL_IN_MILLISECONDS            = 10000;
-    public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS    = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    public static long UPDATE_INTERVAL_IN_MILLISECONDS              = 10 * 1000;
+    public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS      = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    public static float MAPA_PRESISION_MINIMA                       = 30;
 
     public static int AREA_OPACIDAD     = 50;
     public static int BORDER_WIDTH      = 3;

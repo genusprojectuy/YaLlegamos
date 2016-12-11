@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PRESISION_MINIMA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
@@ -222,8 +223,13 @@ public class AlarmaServicio extends IntentService{
 
         @Override
         public void onLocationChanged(Location location) {
+            utilidades.MostrarMensaje(TAG, "Presición de la ubicación en metros: " + String.valueOf(location.getAccuracy()));
             mCurrentLocation    = location;
-            verificarAlertas();
+
+            if(location.getAccuracy() <= MAPA_PRESISION_MINIMA) {
+                verificarAlertas();
+            }
+
         }
 
 
