@@ -19,7 +19,7 @@ public final class Constantes {
     public static final int RANGO_STANDAR   = 4;
     public static long UPDATE_INTERVAL_IN_MILLISECONDS              = 10 * 1000;
     public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS      = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    public static float MAPA_PRESISION_MINIMA                       = 30;
+    public static float MAPA_PRESISION_MINIMA                       = 40;
 
     public static int AREA_OPACIDAD     = 50;
     public static int BORDER_WIDTH      = 3;
@@ -31,7 +31,9 @@ public final class Constantes {
     public static int VIBRAR_LONG       = 100;
     public static long[] VIBRAR_PAT        = {0, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500};
 
-    public static int COLOR_AREA_ALERTA   = Color.argb (AREA_OPACIDAD, 255, 204, 51);
+    public static int COLOR_AREA_ALERTA = Color.argb (AREA_OPACIDAD, 255, 204, 51);
+    public static int COLOR_ALERTA     = Color.rgb(249, 153, 0);
+
 
     public static int MAPA_PADDING      = 200;
     public static int MAPA_ZOOM         = 15;

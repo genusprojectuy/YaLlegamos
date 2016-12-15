@@ -2,6 +2,7 @@ package com.genusproject.yallegamos.yallegamos.logica;
 
 import android.Manifest;
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_ALERTA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PRESISION_MINIMA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
@@ -347,6 +350,8 @@ public class AlarmaServicio extends IntentService{
             NotificationCompat.Builder mNot_Llegada = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("Ya llegamos!")
                     .setContentText("Estas llegando a: " + alerta.getDireccion())
+                    .setColor(COLOR_ALERTA)
+                    .setPriority(Notification.PRIORITY_HIGH)
                     .setSmallIcon(R.mipmap.ic_notificacion);
 
             Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
@@ -376,6 +381,8 @@ public class AlarmaServicio extends IntentService{
 
             mNotifyBuilder.setContentIntent(contIntent);
             mNotifyBuilder.setOngoing(true);
+            mNotifyBuilder.setColor(COLOR_ALERTA);
+            mNotifyBuilder.setPriority(Notification.PRIORITY_HIGH);
             mNotificationManager.notify(NOTIFICACION_ID, mNotifyBuilder.build());
 
         }
