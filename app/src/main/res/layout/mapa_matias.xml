@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -87,18 +88,100 @@
         </RelativeLayout>
 
 
-
-    <ListView
-        android:id="@+id/left_drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:background="#FFF"
-        android:divider="#ccc"
-        android:dividerHeight="1dp"
-        android:paddingRight="15dp"/>
+<LinearLayout
+    android:id="@+id/menu_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="start"
+    android:background="@color/colorWhite">
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="20dp"
+            android:orientation="vertical">
 
-</android.support.v4.widget.DrawerLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/menu_viajes"
+                >
+
+                <TextView
+                    android:id="@+id/lst_txt_menu_viajes"
+                    android:textColor="@color/colorGris"
+                    android:text="@string/viajes"
+                    android:textSize="12dp"
+                    android:focusable="false"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_viajes"
+                    android:layout_marginStart="82dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/lst_txt_menu_viajes" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/menu_configuracion">
+
+                <TextView
+                    android:id="@+id/lst_txt_menu_configuracion"
+                    android:textColor="@color/colorGris"
+                    android:text="@string/configuraci_n"
+                    android:paddingTop="15dp"
+                    android:textSize="12dp"
+                    android:focusable="false"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/ic_setting_light"
+
+                    android:layout_marginStart="41dp"
+                    android:layout_alignBottom="@+id/lst_txt_menu_configuracion"
+                    android:layout_toEndOf="@+id/lst_txt_menu_configuracion" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@color/colorGris"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"/>
+
+        <ListView
+            android:id="@+id/left_drawer"
+            android:choiceMode="singleChoice"
+            android:background="@color/colorWhite"
+            android:divider="#ccc"
+            android:dividerHeight="1dp"
+            android:paddingRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            </android.support.v4.widget.DrawerLayout>

@@ -33,6 +33,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -690,8 +691,32 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     //-----------------------------------------------------------------------------------------------
     public void ArmarMenu() {
         //--------------------------------------------------------------------------------
-        //OPCIONES DE MENU
+        //OPCIONES DE MENU CONFIGURACION Y VIAJES
         //--------------------------------------------------------------------------------
+
+        RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
+        RelativeLayout configuracion    = (RelativeLayout) findViewById(R.id.menu_configuracion);
+
+        viajes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a viajes", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        configuracion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a configuracion", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+
+        //--------------------------------------------------------------------------------
+        //OPCIONES DE MENU ALERTAS
+        //--------------------------------------------------------------------------------
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = new ActionBarDrawerToggle(
                 this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {

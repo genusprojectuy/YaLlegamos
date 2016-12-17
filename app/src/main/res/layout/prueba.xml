@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Utilizo este layout para visualizar como quedan algunos ejemplos -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/lst_txt_menu_viajes"
+            android:textColor="@color/colorGris"
+            android:text="@string/viajes"
+            android:textSize="12dp"
+            android:focusable="false"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_viajes"
+            android:layout_marginStart="82dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/lst_txt_menu_viajes" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/lst_txt_menu_configuracion"
+            android:textColor="@color/colorGris"
+            android:text="@string/configuraci_n"
+            android:paddingTop="15dp"
+            android:textSize="12dp"
+            android:focusable="false"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_setting_light"
+
+            android:layout_marginStart="41dp"
+            android:layout_alignBottom="@+id/lst_txt_menu_configuracion"
+            android:layout_toEndOf="@+id/lst_txt_menu_configuracion" />
+
+
+    </RelativeLayout>
+</LinearLayout>
