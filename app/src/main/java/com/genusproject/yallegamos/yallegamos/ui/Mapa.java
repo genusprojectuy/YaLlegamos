@@ -43,6 +43,7 @@ import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.adaptadores.DrawerListAdapter;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
 import com.genusproject.yallegamos.yallegamos.logica.ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
@@ -590,7 +591,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                         polyline.remove();
                     }
 
-                    for (LatLng latLng : viaje.getRecorrido()) {
+                    for (ViajeRecorrido vr : viaje.getRecorrido()) {
+                        LatLng latLng = vr.getLatitud_longitud();
                         rectOptions.add(latLng);
                     }
 
@@ -690,28 +692,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     //OTRAS FUNCIONES
     //-----------------------------------------------------------------------------------------------
     public void ArmarMenu() {
-        //--------------------------------------------------------------------------------
-        //OPCIONES DE MENU CONFIGURACION Y VIAJES
-        //--------------------------------------------------------------------------------
-
-        RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
-        RelativeLayout configuracion    = (RelativeLayout) findViewById(R.id.menu_configuracion);
-
-        viajes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a viajes", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-        configuracion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a configuracion", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-
 
         //--------------------------------------------------------------------------------
         //OPCIONES DE MENU ALERTAS
@@ -733,6 +713,35 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         };
         //Seteamos la escucha
         drawerLayout.addDrawerListener(drawerToggle);
+
+
+        //--------------------------------------------------------------------------------
+        //OPCIONES DE MENU CONFIGURACION Y VIAJES
+        //--------------------------------------------------------------------------------
+
+        RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
+        RelativeLayout configuracion    = (RelativeLayout) findViewById(R.id.menu_configuracion);
+
+        viajes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Mapa.this, u_viajes.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+
+            }
+        });
+
+        configuracion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a configuracion", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
+
+
 
         //--------------------------------------------------------------------------------
         //CAPTURAR ELEMENTO CLICKEADO

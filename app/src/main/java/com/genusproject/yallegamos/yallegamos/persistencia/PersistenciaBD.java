@@ -10,13 +10,17 @@ import android.provider.BaseColumns;
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FECHA_HORA;
 
 /**
  * Created by alvar on 28/09/2016.
@@ -59,7 +63,21 @@ public final class PersistenciaBD {
                     recorridoReg._ID + " INTEGER PRIMARY KEY," +
                     recorridoReg.RECORRIDO_COL_VIAJE + NUM_TYPE + COMMA_SEP +
                     recorridoReg.RECORRIDO_COL_LAT + TEXT_TYPE + COMMA_SEP +
+                    recorridoReg.RECORRIDO_COL_FECHA + TEXT_TYPE + COMMA_SEP +
                     recorridoReg.RECORRIDO_COL_LONG + TEXT_TYPE + " )";
+
+    /*VIAJE_ALARMAS*/
+ /*
+    private static final String SQL_DELETE_RECORRIDO = "DROP TABLE IF EXISTS " + recorridoReg.RECORRIDO_TABLE_NAME;
+    private static final String SQL_CREATE_RECORRIDO =
+            "CREATE TABLE " + recorridoReg.RECORRIDO_TABLE_NAME + " (" +
+                    recorridoReg._ID + " INTEGER PRIMARY KEY," +
+                    recorridoReg.RECORRIDO_COL_VIAJE + NUM_TYPE + COMMA_SEP +
+                    recorridoReg.RECORRIDO_COL_LAT + TEXT_TYPE + COMMA_SEP +
+                    recorridoReg.RECORRIDO_COL_FECHA + TEXT_TYPE + COMMA_SEP +
+                    recorridoReg.RECORRIDO_COL_LONG + TEXT_TYPE + " )";
+  */
+
     //----------------------------------------------------------------------------------------
 
 
@@ -82,7 +100,7 @@ public final class PersistenciaBD {
     //-----------------------------------------------------------------------
     public class ManejadorDBHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 5;
+        public static final int DATABASE_VERSION = 6;
         public static final String DATABASE_NAME = "alertas.db";
 
         //----------------------------------------------------------------------------------------
@@ -288,7 +306,10 @@ public final class PersistenciaBD {
         ContentValues values    = new ContentValues();
 
         values.put(viajeReg.VIAJE_COL_ESTADO, String.valueOf(viaje.getEstado()));
-        values.put(viajeReg.VIAJE_COL_FECHA, viaje.getFecha().toString());
+
+        String fechaAuxiliar = FECHA_HORA.format(viaje.getFecha());
+        values.put(viajeReg.VIAJE_COL_FECHA,  fechaAuxiliar);
+
 
         viaje.set_ID(db.insert(viajeReg.VIAJE_TABLE_NAME, null, values));
 
@@ -299,9 +320,12 @@ public final class PersistenciaBD {
         SQLiteDatabase db           = mDbHelper.getWritableDatabase();
         ContentValues ubicacionReg  = new ContentValues();
 
+        java.util.Date fecha = new java.util.Date();
+
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_VIAJE, String.valueOf(ID));
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_LAT, String.valueOf(latLng.latitude));
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_LONG, String.valueOf(latLng.longitude));
+        ubicacionReg.put(recorridoReg.RECORRIDO_COL_FECHA, FECHA_HORA.format(fecha));
 
         db.insert(recorridoReg.RECORRIDO_TABLE_NAME, null, ubicacionReg);
 
@@ -336,7 +360,18 @@ public final class PersistenciaBD {
 
             viaje.set_ID(c.getLong(c.getColumnIndexOrThrow(viajeReg._ID)));
             viaje.setEstado(EstadoViaje.valueOf(c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_ESTADO))));
-            viaje.setFecha(Date.valueOf(c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_FECHA))));
+
+            String f = c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_FECHA));
+
+            java.util.Date fecha = null;
+            try {
+
+                fecha = FECHA_HORA.parse(f);
+            } catch (ParseException e) {
+                utilidades.MostrarMensaje(TAG, "ERROR " +  e.getLocalizedMessage());
+            }
+
+            viaje.setFecha(fecha);
 
             viaje.setRecorrido(RecorridoDevolverLista(viaje.get_ID()));
 
@@ -371,7 +406,7 @@ public final class PersistenciaBD {
                 null,
                 null,
                 null,
-                null
+                viajeReg.VIAJE_COL_FECHA+" DESC"
         );
 
 
@@ -381,7 +416,18 @@ public final class PersistenciaBD {
                 Viaje v = new Viaje();
                 v.set_ID(c.getLong(c.getColumnIndexOrThrow(viajeReg._ID)));
                 v.setEstado(EstadoViaje.valueOf(c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_ESTADO))));
-                v.setFecha(Date.valueOf(c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_FECHA))));
+
+                String f = c.getString(c.getColumnIndexOrThrow(viajeReg.VIAJE_COL_FECHA));
+
+                java.util.Date fecha = null;
+                try {
+
+                    fecha = FECHA_HORA.parse(f);
+                } catch (ParseException e) {
+                    utilidades.MostrarMensaje(TAG, "ERROR " +  e.getLocalizedMessage());
+                }
+
+                v.setFecha(fecha);
 
                 v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
 
@@ -415,7 +461,9 @@ public final class PersistenciaBD {
         ContentValues values    = new ContentValues();
 
         values.put(viajeReg.VIAJE_COL_ESTADO, String.valueOf(viaje.getEstado()));
-        values.put(viajeReg.VIAJE_COL_FECHA, viaje.getFecha().toString());
+
+        //String fechaAuxiliar = FECHA_HORA.format(viaje.getFecha());
+        //values.put(viajeReg.VIAJE_COL_FECHA, viaje.getFecha().toString());
 
         String selection = viajeReg._ID + " = ?";
         String[] selectionArgs = {Long.toString(viaje.get_ID())};
@@ -429,15 +477,16 @@ public final class PersistenciaBD {
 
     }
     //-----------------------------------------------
-    private List<LatLng> RecorridoDevolverLista(long viaje){
+    private List<ViajeRecorrido> RecorridoDevolverLista(long viaje){
         SQLiteDatabase db           = mDbHelper.getReadableDatabase();
-        List<LatLng> listaLatLang   = new ArrayList<LatLng>();
+        List<ViajeRecorrido> listaLatLang   = new ArrayList<ViajeRecorrido>();
 
         String[] r_projection = {
                 recorridoReg._ID,
                 recorridoReg.RECORRIDO_COL_VIAJE,
                 recorridoReg.RECORRIDO_COL_LAT,
-                recorridoReg.RECORRIDO_COL_LONG
+                recorridoReg.RECORRIDO_COL_LONG,
+                recorridoReg.RECORRIDO_COL_FECHA
         };
 
         String r_selection        = recorridoReg.RECORRIDO_COL_VIAJE + " = ?";
@@ -456,8 +505,22 @@ public final class PersistenciaBD {
         if(r_c.moveToFirst()) {
             do
             {
+                ViajeRecorrido viajeRecorrido = new ViajeRecorrido();
                 LatLng latLng = new LatLng(r_c.getDouble(r_c.getColumnIndexOrThrow(recorridoReg.RECORRIDO_COL_LAT)), r_c.getDouble(r_c.getColumnIndexOrThrow(recorridoReg.RECORRIDO_COL_LONG)));
-                listaLatLang.add(latLng);
+
+                String f = r_c.getString(r_c.getColumnIndexOrThrow(recorridoReg.RECORRIDO_COL_FECHA));
+
+                java.util.Date fecha = null;
+                try {
+                    fecha = FECHA_HORA.parse(f);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                viajeRecorrido.setFecha(fecha);
+                viajeRecorrido.setLatitud_longitud(latLng);
+
+                listaLatLang.add(viajeRecorrido);
             } while (r_c.moveToNext());
 
         }
@@ -505,6 +568,7 @@ public final class PersistenciaBD {
         public static final String RECORRIDO_COL_VIAJE  = "viaje_id";
         public static final String RECORRIDO_COL_LAT    = "latitud";
         public static final String RECORRIDO_COL_LONG   = "longitud";
+        public static final String RECORRIDO_COL_FECHA  = "fecha";
     }
     //<<<<<----------------------------------------------------------------------------------
 

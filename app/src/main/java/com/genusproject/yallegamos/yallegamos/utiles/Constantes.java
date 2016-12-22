@@ -3,6 +3,7 @@ package com.genusproject.yallegamos.yallegamos.utiles;
 import android.graphics.Color;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by alvar on 24/09/2016.
@@ -14,6 +15,7 @@ public final class Constantes {
     public static final String PROCESADA    = "PROCESADA";
     public static final String SI = "SI";
     public static final String NO = "NO";
+    public static final String VIAJE_ID = "VIAJE_ID";
 
     public static final int RANGO_MAXIMO    = 13;
     public static final int RANGO_STANDAR   = 4;
@@ -42,6 +44,8 @@ public final class Constantes {
     public static int BOTON_DURACION    = 1000;
 
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
+    public static SimpleDateFormat HORA = new SimpleDateFormat("HH:mm");
+    public static SimpleDateFormat FECHA_HORA = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     public static boolean SIN_NOTIFICAR     = false;
     public static boolean NOTIFICAR         = true;

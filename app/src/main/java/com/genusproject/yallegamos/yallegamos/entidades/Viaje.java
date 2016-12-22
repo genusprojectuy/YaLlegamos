@@ -14,7 +14,7 @@ public class Viaje {
     private long     _ID;
     private Date    fecha;
     private EstadoViaje estado;
-    private List<LatLng> recorrido;
+    private List<ViajeRecorrido> recorrido;
     private List<Alerta> alertas;
 
 
@@ -39,11 +39,11 @@ public class Viaje {
         this.fecha = fecha;
     }
 
-    public List<LatLng> getRecorrido() {
+    public List<ViajeRecorrido> getRecorrido() {
         return recorrido;
     }
 
-    public void setRecorrido(List<LatLng> recorrido) {
+    public void setRecorrido(List<ViajeRecorrido> recorrido) {
         this.recorrido = recorrido;
     }
 

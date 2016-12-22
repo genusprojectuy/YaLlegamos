@@ -4,11 +4,13 @@ import android.content.Context;
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.persistencia.PersistenciaBD;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
@@ -167,7 +169,7 @@ public class Observado_ListaAlertas extends Observable {
     //-----------------------------------------------------------------------------------------------------------------------
     public long AddViaje(Viaje viaje){
         viaje.set_ID(alertaT.ViajeAgregar(viaje));
-        viaje.setRecorrido(new ArrayList<LatLng>());
+        viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
         this.v = viaje;
         utilidades.MostrarMensaje(TAG, "Ingresando viaje " + viaje.toString());
         return  viaje.get_ID();
@@ -182,10 +184,22 @@ public class Observado_ListaAlertas extends Observable {
         alertaT.ViajeEliminar(viaje.get_ID());
     }
 
+    public Viaje ViajeDevolver(long _ID){
+        return alertaT.ViajeDevolver(_ID);
+    }
+
+    public List<Viaje> ViajeDevolverLista(){
+        return alertaT.ViajeDevolverLista();
+    }
+
     public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
         alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
-        viaje.getRecorrido().add(latLng);
-        v.getRecorrido().add(latLng);
+        ViajeRecorrido vr = new ViajeRecorrido();
+        vr.setLatitud_longitud(latLng);
+        vr.setFecha(new Date());
+
+        viaje.getRecorrido().add(vr);
+        v.getRecorrido().add(vr);
         return viaje;
     }
 
