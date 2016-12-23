@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="15dp"
-        android:background="#00bcd4"
+        android:background="@color/colorCeleste"
         android:orientation="vertical"
         android:id="@+id/contenedor_marca"
         android:layout_centerHorizontal="true">
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Aquí estamos"
         android:gravity="center"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/colorWhite"
         android:textSize="14dp" />
 
     <View

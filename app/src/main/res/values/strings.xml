@@ -7,5 +7,7 @@
     <string name="Iniciar_Viaje">INICIAR VIAJE</string>
     <string name="configuraci_n">Configuración</string>
     <string name="viajes">Viajes</string>
+    <string name="general">General</string>
+    <string name="alarmas">Alarmas</string>
 
 </resources>
