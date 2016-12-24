@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -159,6 +161,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
         ImageButton btnSearch = (ImageButton) findViewById(R.id.mapa_btnSearch);
         ImageButton boton = (ImageButton) findViewById(R.id.btn_DrawOpen);
+
 
 
 
@@ -904,13 +907,23 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     private void ManejarBoton(){
+
+        Drawable fondo = ContextCompat.getDrawable(this, R.drawable.circulo);
+        Drawable icono = ContextCompat.getDrawable(this, R.drawable.ic_media_play);
+
         if(o_Observado_ListaAlertas.ServicioActivo())
         {
-            btnIniciarViaje.setText("CANCELAR");
+            fondo = ContextCompat.getDrawable(this, R.drawable.circulo_cancelar);
+            icono = ContextCompat.getDrawable(this, R.drawable.ic_stop);
+            btnIniciarViaje.setBackground(fondo);
+            btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
+            btnIniciarViaje.setPadding(0,40,0,0);
         }
         else
         {
-            btnIniciarViaje.setText("INICIAR VIAJE");
+            btnIniciarViaje.setBackground(fondo);
+            btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
+            btnIniciarViaje.setPadding(0,40,0,0);
         }
     }
 

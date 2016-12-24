@@ -98,138 +98,139 @@
             android:onClick="sendMessage"
             android:paddingTop="20dp"
             android:textColor="@color/colorWhite" />
-
-        <Button
-            android:id="@+id/btn_IniciarViajeeee"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:background="@drawable/circulo_cancelar"
-            android:drawableTop="@drawable/ic_stop"
-            android:paddingTop="27dp"
-            android:textColor="#fff" />
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/menu_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/colorWhite"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="20dp"
-            android:paddingTop="15dp">
-
-            <TextView
-                android:id="@+id/titulo_menu_general"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:focusable="false"
-                android:text="@string/general"
-                android:textColor="@color/colorCeleste"
-                android:textSize="21dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorCeleste" />
-
-            <RelativeLayout
-                android:id="@+id/menu_viajes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:orientation="horizontal"
-                android:paddingBottom="5dp"
-                android:paddingTop="20dp">
-
-                <TextView
-                    android:id="@+id/lst_txt_menu_viajes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@string/viajes"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_viajes" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/menu_configuracion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:orientation="horizontal"
-                android:paddingBottom="20dp"
-                android:paddingTop="5dp">
-
-                <TextView
-                    android:id="@+id/lst_txt_menu_configuracion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:paddingTop="15dp"
-                    android:text="@string/configuraci_n"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorGris" />
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="22dp"
-                    android:src="@drawable/ic_configuracion" />
-
-            </RelativeLayout>
+        <!--
+               <Button
+                   android:id="@+id/btn_IniciarViajeeee"
+                   android:layout_width="70dp"
+                   android:layout_height="70dp"
+                   android:layout_alignParentBottom="true"
+                   android:layout_centerHorizontal="true"
+                   android:layout_marginBottom="40dp"
+                   android:background="@drawable/circulo_cancelar"
+                   android:drawableTop="@drawable/ic_stop"
+                   android:paddingTop="27dp"
+                   android:textColor="#fff" />
+                   -->
+           </RelativeLayout>
 
 
-            <TextView
-                android:id="@+id/titulo_menu_alarmas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:focusable="false"
-                android:text="@string/alarmas"
-                android:textColor="@color/colorCeleste"
-                android:textSize="21dp"
-                android:layout_marginTop="10dp"/>
+           <LinearLayout
+               android:id="@+id/menu_frame"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_gravity="start"
+               android:background="@color/colorWhite"
+               android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorCeleste" />
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical"
+                   android:paddingBottom="15dp"
+                   android:paddingLeft="15dp"
+                   android:paddingRight="20dp"
+                   android:paddingTop="15dp">
 
-        </LinearLayout>
+                   <TextView
+                       android:id="@+id/titulo_menu_general"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginBottom="5dp"
+                       android:layout_marginLeft="5dp"
+                       android:focusable="false"
+                       android:text="@string/general"
+                       android:textColor="@color/colorCeleste"
+                       android:textSize="21dp" />
 
-        <ListView
-            android:id="@+id/left_drawer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorWhite"
-            android:choiceMode="singleChoice"
-            android:divider="#ccc"
-            android:dividerHeight="1dp" />
+                   <View
+                       android:layout_width="match_parent"
+                       android:layout_height="1dp"
+                       android:background="@color/colorCeleste" />
 
-    </LinearLayout>
+                   <RelativeLayout
+                       android:id="@+id/menu_viajes"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginLeft="7dp"
+                       android:orientation="horizontal"
+                       android:paddingBottom="5dp"
+                       android:paddingTop="20dp">
 
-</android.support.v4.widget.DrawerLayout>
+                       <TextView
+                           android:id="@+id/lst_txt_menu_viajes"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:focusable="false"
+                           android:text="@string/viajes"
+                           android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                       <ImageView
+                           android:layout_width="15dp"
+                           android:layout_height="15dp"
+                           android:layout_alignParentRight="true"
+                           android:layout_marginRight="20dp"
+                           android:layout_marginTop="10dp"
+                           android:src="@drawable/ic_viajes" />
+                   </RelativeLayout>
+
+                   <RelativeLayout
+                       android:id="@+id/menu_configuracion"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_marginLeft="7dp"
+                       android:orientation="horizontal"
+                       android:paddingBottom="20dp"
+                       android:paddingTop="5dp">
+
+                       <TextView
+                           android:id="@+id/lst_txt_menu_configuracion"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:focusable="false"
+                           android:paddingTop="15dp"
+                           android:text="@string/configuraci_n"
+                           android:textAppearance="?android:attr/textAppearanceMedium"
+                           android:textColor="@color/colorGris" />
+
+                       <ImageView
+                           android:layout_width="15dp"
+                           android:layout_height="15dp"
+                           android:layout_alignParentRight="true"
+                           android:layout_marginRight="20dp"
+                           android:layout_marginTop="22dp"
+                           android:src="@drawable/ic_configuracion" />
+
+                   </RelativeLayout>
+
+
+                   <TextView
+                       android:id="@+id/titulo_menu_alarmas"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginBottom="5dp"
+                       android:layout_marginLeft="5dp"
+                       android:focusable="false"
+                       android:text="@string/alarmas"
+                       android:textColor="@color/colorCeleste"
+                       android:textSize="21dp"
+                       android:layout_marginTop="10dp"/>
+
+                   <View
+                       android:layout_width="match_parent"
+                       android:layout_height="1dp"
+                       android:background="@color/colorCeleste" />
+
+               </LinearLayout>
+
+               <ListView
+                   android:id="@+id/left_drawer"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:background="@color/colorWhite"
+                   android:choiceMode="singleChoice"
+                   android:divider="#ccc"
+                   android:dividerHeight="1dp" />
+
+           </LinearLayout>
+
+       </android.support.v4.widget.DrawerLayout>
