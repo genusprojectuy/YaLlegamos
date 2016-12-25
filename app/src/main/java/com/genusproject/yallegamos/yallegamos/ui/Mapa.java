@@ -934,7 +934,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                         btnIniciarViaje.setPaddingRelative(0, 55, 0, 0);
                         btnIniciarViaje.startAnimation(zoomin);
                     }
-                }, 1000);
+                }, getResources().getInteger(R.integer.medio_segundo));
             }
 
         }
@@ -965,7 +965,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                         btnIniciarViaje.setPaddingRelative(0,40,0,0);
                         btnIniciarViaje.startAnimation(zoomin);
                     }
-                }, 1000);
+                }, getResources().getInteger(R.integer.medio_segundo));
             }
 
 
