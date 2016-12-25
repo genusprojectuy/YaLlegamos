@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -130,7 +131,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private Observado_ListaAlertas o_Observado_ListaAlertas;
     private  ListaAlertas c_ListaAlerta;
     private Polyline polyline;
-
+    private boolean primerArranque;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -162,7 +163,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         ImageButton btnSearch = (ImageButton) findViewById(R.id.mapa_btnSearch);
         ImageButton boton = (ImageButton) findViewById(R.id.btn_DrawOpen);
 
-
+        primerArranque = true;
 
 
         //-----------------------------------------------------------------------------------------------
@@ -196,9 +197,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                 anim.start();
 */
-
-                Animation shake = AnimationUtils.loadAnimation(Mapa.this, R.anim.shake_nimacion);
-                btnIniciarViaje.startAnimation(shake);
 
 
                 ManejarServicio();
@@ -911,19 +909,61 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         Drawable fondo = ContextCompat.getDrawable(this, R.drawable.circulo);
         Drawable icono = ContextCompat.getDrawable(this, R.drawable.ic_media_play);
 
+        final Animation zoomin = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_in);
+        Animation zoomout = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_out);
+
         if(o_Observado_ListaAlertas.ServicioActivo())
         {
-            fondo = ContextCompat.getDrawable(this, R.drawable.circulo_cancelar);
-            icono = ContextCompat.getDrawable(this, R.drawable.ic_stop);
-            btnIniciarViaje.setBackground(fondo);
-            btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
-            btnIniciarViaje.setPadding(0,40,0,0);
+            btnIniciarViaje.startAnimation(zoomout);
+            fondo = ContextCompat.getDrawable(Mapa.this, R.drawable.circulo_cancelar);
+            icono = ContextCompat.getDrawable(Mapa.this, R.drawable.ic_stop);
+
+            final Handler handler = new Handler();
+            final Drawable finalFondo = fondo;
+            final Drawable finalIcono = icono;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+
+                    btnIniciarViaje.setBackground(finalFondo);
+                    btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono, null, null);
+                    btnIniciarViaje.setPaddingRelative(0,55,0,0);
+                    btnIniciarViaje.startAnimation(zoomin);
+                }
+            }, 1000);
+
         }
         else
         {
-            btnIniciarViaje.setBackground(fondo);
-            btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
-            btnIniciarViaje.setPadding(0,40,0,0);
+
+            if(primerArranque) {
+                btnIniciarViaje.setBackground(fondo);
+                btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
+                btnIniciarViaje.setPaddingRelative(0,40,0,0);
+                btnIniciarViaje.startAnimation(zoomin);
+                primerArranque = false;
+            }
+            else
+            {
+                btnIniciarViaje.startAnimation(zoomout);
+
+                final Handler handler = new Handler();
+                final Drawable finalFondo1 = fondo;
+                final Drawable finalIcono1 = icono;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 100ms
+                        btnIniciarViaje.setBackground(finalFondo1);
+                        btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono1, null, null);
+                        btnIniciarViaje.setPaddingRelative(0,40,0,0);
+                        btnIniciarViaje.startAnimation(zoomin);
+                    }
+                }, 1000);
+            }
+
+
         }
     }
 

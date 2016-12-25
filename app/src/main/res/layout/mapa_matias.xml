@@ -96,7 +96,6 @@
             android:background="@drawable/circulo"
             android:drawableTop="@android:drawable/ic_media_play"
             android:onClick="sendMessage"
-            android:paddingTop="20dp"
             android:textColor="@color/colorWhite" />
         <!--
                <Button
