@@ -95,7 +95,7 @@
             android:layout_marginBottom="40dp"
             android:background="@drawable/circulo"
             android:drawableTop="@android:drawable/ic_media_play"
-            android:onClick="sendMessage"
+            android:paddingTop="27dp"
             android:textColor="@color/colorWhite" />
         <!--
                <Button
