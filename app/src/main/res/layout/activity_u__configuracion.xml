@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_u__configuracion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.genusproject.yallegamos.yallegamos.ui.u_Configuracion">
+
+    <TextView
+        android:text="Tono:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_cfg_SelectSonido"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="Ninguno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/txt_cfg_select_sound" />
+
+    <TextView
+        android:text="Sonido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_cfg_SelectSonido"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/txt_cfg_ActSound" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/swc_ActSound"
+        android:layout_alignBaseline="@+id/txt_cfg_ActSound"
+        android:layout_alignBottom="@+id/txt_cfg_ActSound"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Vibrar:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/swc_ActSound"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp"
+        android:id="@+id/txt_cfg_ActVibr" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/swc_ActVibr"
+        android:layout_alignBaseline="@+id/txt_cfg_ActVibr"
+        android:layout_alignBottom="@+id/txt_cfg_ActVibr"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

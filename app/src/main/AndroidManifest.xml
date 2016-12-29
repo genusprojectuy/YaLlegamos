@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -59,14 +58,19 @@
         <activity
             android:name=".ui.u_viajes"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.Mapa" />
         </activity>
         <activity
             android:name=".ui.VerViaje"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".ui.u_Configuracion"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.Mapa" />
 
         </activity>
     </application>

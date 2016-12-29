@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -737,8 +738,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         configuracion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Accediendo a configuracion", Toast.LENGTH_SHORT);
-                toast.show();
+                Intent intent = new Intent(Mapa.this, u_Configuracion.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+
             }
         });
 
@@ -1072,6 +1075,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         }
         return null;
     }
+
+
     //<<<<<------------------------------------------------------------------------------------------
 
     //-----------------------------------------------------------------------------------------------

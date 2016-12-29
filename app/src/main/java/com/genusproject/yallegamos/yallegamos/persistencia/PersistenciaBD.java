@@ -5,10 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.entidades.Configuracion;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
@@ -66,6 +68,15 @@ public final class PersistenciaBD {
                     recorridoReg.RECORRIDO_COL_FECHA + TEXT_TYPE + COMMA_SEP +
                     recorridoReg.RECORRIDO_COL_LONG + TEXT_TYPE + " )";
 
+    /*CONFIGURACION*/
+    private static final String SQL_DELETE_CONFIGURACION = "DROP TABLE IF EXISTS " + configuracionReg.CONFIGURACION_TABLE_NAME;
+    private static final String SQL_CREATE_CONFIGURACION =
+            "CREATE TABLE " + configuracionReg.CONFIGURACION_TABLE_NAME + " (" +
+                    configuracionReg._ID + " INTEGER PRIMARY KEY," +
+                    configuracionReg.CONFIGURACION_COL_SONACT + TEXT_TYPE + COMMA_SEP +
+                    configuracionReg.CONFIGURACION_COL_SONIDO + TEXT_TYPE + COMMA_SEP +
+                    configuracionReg.CONFIGURACION_COL_VIBACT + TEXT_TYPE +  " )";
+
     /*VIAJE_ALARMAS*/
  /*
     private static final String SQL_DELETE_RECORRIDO = "DROP TABLE IF EXISTS " + recorridoReg.RECORRIDO_TABLE_NAME;
@@ -100,7 +111,7 @@ public final class PersistenciaBD {
     //-----------------------------------------------------------------------
     public class ManejadorDBHelper extends SQLiteOpenHelper {
         // If you change the database schema, you must increment the database version.
-        public static final int DATABASE_VERSION = 6;
+        public static final int DATABASE_VERSION = 7;
         public static final String DATABASE_NAME = "alertas.db";
 
         //----------------------------------------------------------------------------------------
@@ -115,6 +126,7 @@ public final class PersistenciaBD {
             db.execSQL(SQL_CREATE_ALERTA);
             db.execSQL(SQL_CREATE_VIAJE);
             db.execSQL(SQL_CREATE_RECORRIDO);
+            db.execSQL(SQL_CREATE_CONFIGURACION);
         }
 
         //----------------------------------------------------------------------------------------
@@ -123,6 +135,7 @@ public final class PersistenciaBD {
             db.execSQL(SQL_DELETE_ALERTA);
             db.execSQL(SQL_DELETE_VIAJE);
             db.execSQL(SQL_DELETE_RECORRIDO);
+            db.execSQL(SQL_DELETE_CONFIGURACION);
             onCreate(db);
         }
 
@@ -540,6 +553,99 @@ public final class PersistenciaBD {
 
 
     //----------------------------------------------------------------------------------------
+    //MANTENIMIENTO DE CONFIGURACION
+    //----------------------------------------------------------------------------------------
+    public long ConfiguracionAgregar(Configuracion configuracion){
+
+        SQLiteDatabase db       = mDbHelper.getWritableDatabase();
+        ContentValues values    = new ContentValues();
+
+        values.put(configuracionReg.CONFIGURACION_COL_SONACT, configuracion.getSonidoActivo());
+        values.put(configuracionReg.CONFIGURACION_COL_SONIDO, configuracion.getSonido().toString());
+        values.put(configuracionReg.CONFIGURACION_COL_VIBACT, configuracion.getVibracionActiva());
+
+        configuracion.set_ID(db.insert(configuracionReg.CONFIGURACION_TABLE_NAME, null, values));
+
+        return configuracion.get_ID();
+    }
+    //-----------------------------------------------
+    public Configuracion ConfiguracionDevolver(long _ID){
+
+        Configuracion configuracion       = new Configuracion();
+        SQLiteDatabase db   = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                configuracionReg._ID,
+                configuracionReg.CONFIGURACION_COL_VIBACT,
+                configuracionReg.CONFIGURACION_COL_SONIDO,
+                configuracionReg.CONFIGURACION_COL_SONACT
+        };
+
+        String selection        = configuracionReg._ID + " = ?";
+        String[] selectionArgs  = {Long.toString(_ID)};
+
+        Cursor c = db.query(
+                configuracionReg.CONFIGURACION_TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+
+        if (c.moveToFirst()) {
+
+            configuracion.set_ID(c.getLong(c.getColumnIndexOrThrow(configuracionReg._ID)));
+
+            String ur = c.getString(c.getColumnIndexOrThrow(configuracionReg.CONFIGURACION_COL_SONIDO));
+            if(!ur.equals(""))
+            {
+                configuracion.setSonido(Uri.parse(ur));
+            }
+            configuracion.setSonidoActivo(c.getString(c.getColumnIndexOrThrow(configuracionReg.CONFIGURACION_COL_SONACT)));
+            configuracion.setVibracionActiva(c.getString(c.getColumnIndexOrThrow(configuracionReg.CONFIGURACION_COL_VIBACT)));
+        }
+        else
+        {
+            utilidades.MostrarMensaje(TAG, "No se encontro registro");
+        }
+
+        return configuracion;
+    }
+    //-----------------------------------------------
+    public void ConfiguracionModificar(Configuracion configuracion){
+        SQLiteDatabase db       = mDbHelper.getReadableDatabase();
+        ContentValues values    = new ContentValues();
+
+        values.put(configuracionReg.CONFIGURACION_COL_VIBACT, configuracion.getVibracionActiva());
+
+        if(configuracion.getSonido() != null)
+        {
+            values.put(configuracionReg.CONFIGURACION_COL_SONIDO, configuracion.getSonido().toString());
+        }
+        else
+        {
+            values.put(configuracionReg.CONFIGURACION_COL_SONIDO, "");
+        }
+
+        values.put(configuracionReg.CONFIGURACION_COL_SONACT, configuracion.getSonidoActivo());
+
+        String selection = configuracionReg._ID + " = ?";
+        String[] selectionArgs = {Long.toString(configuracion.get_ID())};
+
+        int count = db.update(
+                configuracionReg.CONFIGURACION_TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+
+    }
+    //<<<<<<----------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------
     //ESTRUCTURAS
     //----------------------------------------------------------------------------------------
     /*ALERTAS*/
@@ -571,6 +677,13 @@ public final class PersistenciaBD {
         public static final String RECORRIDO_COL_FECHA  = "fecha";
     }
     //<<<<<----------------------------------------------------------------------------------
-
+    /*CONFIGURACION*/
+    public static class configuracionReg implements BaseColumns {
+        public static final String CONFIGURACION_TABLE_NAME  = "t_configuracion";
+        public static final String CONFIGURACION_COL_SONIDO  = "sonido_uri";
+        public static final String CONFIGURACION_COL_SONACT  = "son_act";
+        public static final String CONFIGURACION_COL_VIBACT  = "vib_act";
+    }
+    //<<<<<----------------------------------------------------------------------------------
 
 }

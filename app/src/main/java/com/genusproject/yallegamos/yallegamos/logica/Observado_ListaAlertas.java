@@ -1,8 +1,10 @@
 package com.genusproject.yallegamos.yallegamos.logica;
 
 import android.content.Context;
+import android.media.RingtoneManager;
 
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
+import com.genusproject.yallegamos.yallegamos.entidades.Configuracion;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.persistencia.PersistenciaBD;
@@ -14,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.PENDIENTE;
 
@@ -29,6 +32,8 @@ public class Observado_ListaAlertas extends Observable {
     private static Observado_ListaAlertas ourInstance;
     private Utilidades utilidades = Utilidades.getInstance();
     private Viaje v;
+    private List<Viaje> lstViajes;
+    private Configuracion configuracion;
 
 
     public static Observado_ListaAlertas getInstance(Context pContext) {
@@ -205,6 +210,39 @@ public class Observado_ListaAlertas extends Observable {
 
     public Viaje DevolverViaje(){
         return v;
+    }
+
+    public Configuracion DevolverConfiguracion()
+    {
+
+        if(this.configuracion == null) {
+
+            Configuracion cfg = alertaT.ConfiguracionDevolver(1);
+
+            if (cfg.get_ID() != 1) {
+
+
+                cfg = new Configuracion();
+
+                cfg.setSonido(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+                cfg.setSonidoActivo(SI);
+                cfg.setVibracionActiva(SI);
+
+                cfg.set_ID(alertaT.ConfiguracionAgregar(cfg));
+
+
+
+            }
+
+            this.configuracion = cfg;
+        }
+        return  configuracion;
+
+    }
+    public void ModificarConfiguracion(Configuracion pConfiguracion)
+    {
+        alertaT.ConfiguracionModificar(pConfiguracion);
+        this.configuracion = pConfiguracion;
     }
 
 

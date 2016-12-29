@@ -359,10 +359,26 @@ public class AlarmaServicio extends IntentService{
 
             mNot_Llegada.setContentIntent(contIntent);
 
-            long[] patron = VIBRAR_PAT;
-            mNot_Llegada.setVibrate(patron);
+            if(observadoListaAlertas.DevolverConfiguracion().getVibracionActiva().equals(SI))
+            {
+                long[] patron = VIBRAR_PAT;
+                mNot_Llegada.setVibrate(patron);
+
+            }
+
+            if(observadoListaAlertas.DevolverConfiguracion().getSonidoActivo().equals(SI) && observadoListaAlertas.DevolverConfiguracion().getSonido() != null)
+            {
+                mNot_Llegada.setSound(observadoListaAlertas.DevolverConfiguracion().getSonido());
+            }
+
+            mNot_Llegada.setLights(getColor(R.color.colorCeleste),1,1);
+
             mNot_Llegada.setAutoCancel(true);
-            mNotificationManager.notify(NOTIFICACION_DESTINO_ID, mNot_Llegada.build());
+
+            Notification notification = mNot_Llegada.build();
+            notification.flags |= Notification.FLAG_INSISTENT;
+
+            mNotificationManager.notify(NOTIFICACION_DESTINO_ID, notification);
 
             utilidades.MostrarMensaje(TAG, "Notificando llegada a destino");
 
