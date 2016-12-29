@@ -376,8 +376,7 @@ public class AlarmaServicio extends IntentService{
             mNot_Llegada.setAutoCancel(true);
 
             Notification notification = mNot_Llegada.build();
-            notification.flags |= Notification.FLAG_INSISTENT;
-
+            notification.flags |= Notification.FLAG_INSISTENT | Notification.FLAG_SHOW_LIGHTS;
             mNotificationManager.notify(NOTIFICACION_DESTINO_ID, notification);
 
             utilidades.MostrarMensaje(TAG, "Notificando llegada a destino");
