@@ -43,6 +43,9 @@ public final class Constantes {
     public static int MAPA_LINEA_COLOR  = Color.BLUE;
     public static int BOTON_DURACION    = 1000;
 
+    public static int LED_INICIO    = 1;
+    public static int LED_FIN       = 60000;
+
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
     public static SimpleDateFormat HORA = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat FECHA_HORA = new SimpleDateFormat("dd/MM/yyyy HH:mm");

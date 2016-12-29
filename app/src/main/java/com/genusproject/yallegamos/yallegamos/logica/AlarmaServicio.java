@@ -37,6 +37,8 @@ import java.util.Observer;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.LED_FIN;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.LED_INICIO;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PRESISION_MINIMA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
@@ -371,7 +373,7 @@ public class AlarmaServicio extends IntentService{
                 mNot_Llegada.setSound(observadoListaAlertas.DevolverConfiguracion().getSonido());
             }
 
-            mNot_Llegada.setLights(getColor(R.color.colorCeleste),1,1);
+            mNot_Llegada.setLights(getColor(R.color.colorCeleste), LED_INICIO, LED_FIN);
 
             mNot_Llegada.setAutoCancel(true);
 
