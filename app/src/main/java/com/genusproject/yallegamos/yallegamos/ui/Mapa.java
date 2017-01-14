@@ -969,13 +969,13 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
     private void ManejarBoton(){
 
-        Drawable fondo = ContextCompat.getDrawable(this, R.drawable.circulo);
+        Drawable fondo = ContextCompat.getDrawable(this, R.drawable.ic_play);
         //Drawable icono = ContextCompat.getDrawable(this, R.drawable.ic_media_play);
 
         final Animation zoomin = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_in);
         Animation zoomout = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_out);
         if(o_Observado_ListaAlertas.ServicioActivo()) {
-            fondo = ContextCompat.getDrawable(Mapa.this, R.drawable.circulo_cancelar);
+            fondo = ContextCompat.getDrawable(Mapa.this, R.drawable.ic_stop_2);
             if (primerServicio)
             {
                 primerServicio = false;

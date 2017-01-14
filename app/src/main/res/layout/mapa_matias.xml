@@ -122,7 +122,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="40dp"
-            android:background="@drawable/circulo"
+            android:background="@drawable/ic_play"
             android:paddingTop="27dp"
             android:textColor="@color/colorWhite" />
         <!--
