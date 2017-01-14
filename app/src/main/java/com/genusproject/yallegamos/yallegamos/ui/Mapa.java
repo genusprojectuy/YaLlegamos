@@ -162,10 +162,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //-----------------------------------------------------------------------------------------------
         etSearch = (EditText) findViewById(R.id.et_search);
         btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
-        ImageButton btnSearch = (ImageButton) findViewById(R.id.mapa_btnSearch);
-        ImageButton boton = (ImageButton) findViewById(R.id.btn_DrawOpen);
+        RelativeLayout btnSearch = (RelativeLayout) findViewById(R.id.mapa_btnSearch);
+        RelativeLayout boton = (RelativeLayout) findViewById(R.id.btn_DrawOpen);
 
         primerArranque = true;
+
 
 
         //-----------------------------------------------------------------------------------------------
@@ -722,10 +723,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //OPCIONES DE MENU CONFIGURACION Y VIAJES
         //--------------------------------------------------------------------------------
 
-        RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
+        //RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
         RelativeLayout configuracion    = (RelativeLayout) findViewById(R.id.menu_configuracion);
 
-        viajes.setOnClickListener(new View.OnClickListener() {
+/*        viajes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Mapa.this, u_viajes.class);
@@ -734,7 +735,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
             }
         });
-
+*/
         configuracion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -911,44 +912,49 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private void ManejarBoton(){
 
         Drawable fondo = ContextCompat.getDrawable(this, R.drawable.circulo);
-        Drawable icono = ContextCompat.getDrawable(this, R.drawable.ic_media_play);
+        //Drawable icono = ContextCompat.getDrawable(this, R.drawable.ic_media_play);
 
         final Animation zoomin = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_in);
         Animation zoomout = AnimationUtils.loadAnimation(Mapa.this, R.anim.zoom_out);
-
         if(o_Observado_ListaAlertas.ServicioActivo()) {
+            fondo = ContextCompat.getDrawable(Mapa.this, R.drawable.circulo_cancelar);
             if (primerServicio)
             {
                 primerServicio = false;
                 btnIniciarViaje.startAnimation(zoomout);
-                fondo = ContextCompat.getDrawable(Mapa.this, R.drawable.circulo_cancelar);
-                icono = ContextCompat.getDrawable(Mapa.this, R.drawable.ic_stop);
+
+                //icono = ContextCompat.getDrawable(Mapa.this, R.drawable.ic_stop);
 
                 final Handler handler = new Handler();
                 final Drawable finalFondo = fondo;
-                final Drawable finalIcono = icono;
+                //final Drawable finalIcono = icono;
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //Do something after 100ms
 
                         btnIniciarViaje.setBackground(finalFondo);
-                        btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono, null, null);
+                        //btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono, null, null);
                         btnIniciarViaje.setPaddingRelative(0, 55, 0, 0);
                         btnIniciarViaje.startAnimation(zoomin);
                     }
                 }, getResources().getInteger(R.integer.medio_segundo));
             }
+            else
+            {
+                btnIniciarViaje.setBackground(fondo);
+            }
 
         }
         else
         {
+
             primerServicio = true;
 
             if(primerArranque) {
                 btnIniciarViaje.setBackground(fondo);
-                btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
-                btnIniciarViaje.setPaddingRelative(0,40,0,0);
+                //btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, icono, null, null);
+                //btnIniciarViaje.setPaddingRelative(0,40,0,0);
                 btnIniciarViaje.startAnimation(zoomin);
                 primerArranque = false;
             }
@@ -958,13 +964,13 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
                 final Handler handler = new Handler();
                 final Drawable finalFondo1 = fondo;
-                final Drawable finalIcono1 = icono;
+                //final Drawable finalIcono1 = icono;
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         //Do something after 100ms
                         btnIniciarViaje.setBackground(finalFondo1);
-                        btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono1, null, null);
+                        //btnIniciarViaje.setCompoundDrawablesWithIntrinsicBounds(null, finalIcono1, null, null);
                         btnIniciarViaje.setPaddingRelative(0,40,0,0);
                         btnIniciarViaje.startAnimation(zoomin);
                     }

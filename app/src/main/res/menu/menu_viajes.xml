@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btn_elim_viajes"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:orderInCategory="10"
+        android:title="@string/eliminar_viajes"
+        app:showAsAction="ifRoom">
+    </item>
+</menu>

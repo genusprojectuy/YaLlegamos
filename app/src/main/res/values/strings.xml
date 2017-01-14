@@ -9,5 +9,5 @@
     <string name="viajes">Viajes</string>
     <string name="general">General</string>
     <string name="alarmas">Alarmas</string>
-
+    <string name="eliminar_viajes">Eliminar Viajes</string>
 </resources>

@@ -442,7 +442,7 @@ public final class PersistenciaBD {
 
                 v.setFecha(fecha);
 
-                v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
+                //v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
 
                 viaje.add(v);
             } while (c.moveToNext());

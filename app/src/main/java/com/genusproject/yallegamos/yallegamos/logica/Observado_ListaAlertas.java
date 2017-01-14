@@ -49,6 +49,7 @@ public class Observado_ListaAlertas extends Observable {
         alertaT     = PersistenciaBD.getInstancia(context);
         lstAlerta   = ListaAlertas.getInstance();
         lstAlerta.setLstAlerta(alertaT.AlertaDevolverLista());
+        lstViajes = alertaT.ViajeDevolverLista();
         this.BuscarAlertasActivas();
         this.BuscarAlertasActivasSinProcesar();
         utilidades.MostrarMensaje(TAG, "Cargando lista, cantidad: " + lstAlerta.getLstAlerta().size());
@@ -59,8 +60,7 @@ public class Observado_ListaAlertas extends Observable {
         return lstAlerta.getLstAlerta();
     }
 
-    public long AddAlerta(Alerta alerta)
-    {
+    public long AddAlerta(Alerta alerta){
         alerta.set_ID(alertaT.AlertaAgregar(alerta));
         lstAlerta.getLstAlerta().add(alerta);
         Notificar();
@@ -68,8 +68,7 @@ public class Observado_ListaAlertas extends Observable {
         return  alerta.get_ID();
     }
 
-    public void ModAlerta(Alerta alerta, boolean notificar)
-    {
+    public void ModAlerta(Alerta alerta, boolean notificar){
         alertaT.AlertaModificar(alerta);
         int posicion = 0;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
@@ -89,8 +88,7 @@ public class Observado_ListaAlertas extends Observable {
         }
     }
 
-    public void DelAlerta(Alerta alerta)
-    {
+    public void DelAlerta(Alerta alerta){
         alertaT.AlertaEliminar(alerta.get_ID());
         int posicion = 0;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
@@ -117,8 +115,7 @@ public class Observado_ListaAlertas extends Observable {
         notifyObservers(lstAlerta);
     }
 
-    private void BuscarAlertasActivas()
-    {
+    private void BuscarAlertasActivas(){
         boolean AlertasActivas = false;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
@@ -136,8 +133,7 @@ public class Observado_ListaAlertas extends Observable {
         return lstAlerta.isExistenAlertasActivas();
     }
 
-    private void BuscarAlertasActivasSinProcesar()
-    {
+    private void BuscarAlertasActivasSinProcesar(){
         boolean AlertasActivas = false;
         for(Alerta unaAlerta : lstAlerta.getLstAlerta())
         {
@@ -151,8 +147,7 @@ public class Observado_ListaAlertas extends Observable {
         lstAlerta.setExistenAlertasActivasSinProcesar(AlertasActivas);
     }
 
-    public boolean ExistenAlertasActivasSinProcesar()
-    {
+    public boolean ExistenAlertasActivasSinProcesar(){
         return lstAlerta.isExistenAlertasActivasSinProcesar();
     }
 
@@ -173,31 +168,73 @@ public class Observado_ListaAlertas extends Observable {
     //VIAJE
     //-----------------------------------------------------------------------------------------------------------------------
     public long AddViaje(Viaje viaje){
-        viaje.set_ID(alertaT.ViajeAgregar(viaje));
-        viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
+        //viaje.set_ID(alertaT.ViajeAgregar(viaje));
+        //viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
+        viaje.set_ID(1);
         this.v = viaje;
-        utilidades.MostrarMensaje(TAG, "Ingresando viaje " + viaje.toString());
+        //lstViajes.add(viaje);
         return  viaje.get_ID();
     }
 
     public void ModViaje(Viaje viaje){
+        /*
         utilidades.MostrarMensaje(TAG, "Modificando viaje " + viaje.toString());
         alertaT.ViajeModificar(viaje);
+
+        int posicion = 0;
+        for(Viaje unViaje : lstViajes)
+        {
+            if (unViaje.get_ID() == viaje.get_ID())
+            {
+                posicion = lstViajes.indexOf(unViaje);
+                break;
+            }
+        }
+
+        lstViajes.set(posicion, viaje);
+        */
     }
 
     public void DelViaje(Viaje viaje){
+        /*
         alertaT.ViajeEliminar(viaje.get_ID());
+
+        int posicion = 0;
+        for(Viaje unViaje : lstViajes)
+        {
+            if (unViaje.get_ID() == viaje.get_ID())
+            {
+                posicion = lstViajes.indexOf(unViaje);
+                break;
+            }
+        }
+
+        lstViajes.remove(posicion);
+        */
     }
 
     public Viaje ViajeDevolver(long _ID){
-        return alertaT.ViajeDevolver(_ID);
+
+        Viaje retViaje = new Viaje();
+        /*
+        for(Viaje unViaje : lstViajes)
+        {
+            if (unViaje.get_ID() == _ID)
+            {
+                retViaje = unViaje;
+                break;
+            }
+        }
+        */
+        return retViaje;
     }
 
     public List<Viaje> ViajeDevolverLista(){
-        return alertaT.ViajeDevolverLista();
+        return lstViajes;
     }
 
     public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
+        /*
         alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
         ViajeRecorrido vr = new ViajeRecorrido();
         vr.setLatitud_longitud(latLng);
@@ -205,6 +242,20 @@ public class Observado_ListaAlertas extends Observable {
 
         viaje.getRecorrido().add(vr);
         v.getRecorrido().add(vr);
+
+
+        int posicion = 0;
+        for(Viaje unViaje : lstViajes)
+        {
+            if (unViaje.get_ID() == viaje.get_ID())
+            {
+                posicion = lstViajes.indexOf(unViaje);
+                break;
+            }
+        }
+
+        lstViajes.set(posicion, viaje);
+        */
         return viaje;
     }
 
@@ -212,8 +263,7 @@ public class Observado_ListaAlertas extends Observable {
         return v;
     }
 
-    public Configuracion DevolverConfiguracion()
-    {
+    public Configuracion DevolverConfiguracion(){
 
         if(this.configuracion == null) {
 
@@ -239,8 +289,8 @@ public class Observado_ListaAlertas extends Observable {
         return  configuracion;
 
     }
-    public void ModificarConfiguracion(Configuracion pConfiguracion)
-    {
+
+    public void ModificarConfiguracion(Configuracion pConfiguracion){
         alertaT.ConfiguracionModificar(pConfiguracion);
         this.configuracion = pConfiguracion;
     }
