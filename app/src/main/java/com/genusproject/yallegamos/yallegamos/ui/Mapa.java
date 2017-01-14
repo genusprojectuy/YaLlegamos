@@ -624,7 +624,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         autocompleteFragment.setFilter(typeFilter);
 
-
 /*
         AutocompleteFilter dd = new AutocompleteFilter.Builder()
                 .setTypeFilter(Place.TYPE_COUNTRY)
@@ -637,12 +636,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
 
-                cameraBuilder = new LatLngBounds.Builder();
-                cameraBuilder.include(place.getLatLng());
-                cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
-
-                mMap.moveCamera(cu);
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(MAPA_ZOOM));
+                MoverCamara(place.getLatLng());
 
             }
 
@@ -806,6 +800,17 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 MostrarAlertaEditable(yourData.get_ID());
                 return false;
             }
+        });
+
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Alerta yourData = lstAlerta.get(position);
+                LatLng latLng = new LatLng(Double.valueOf(yourData.getLatitud()), Double.valueOf(yourData.getLongitud()));
+                MoverCamara(latLng);
+                drawerLayout.closeDrawers();
+            }
+
         });
         //-
 
@@ -1125,6 +1130,15 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         }
         return null;
+    }
+
+    private void MoverCamara(LatLng latLang){
+        cameraBuilder = new LatLngBounds.Builder();
+        cameraBuilder.include(latLang);
+        cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
+
+        mMap.moveCamera(cu);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(MAPA_ZOOM));
     }
 
 
