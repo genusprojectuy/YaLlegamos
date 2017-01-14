@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,9 +60,13 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.identity.intents.AddressConstants;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -160,9 +165,9 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //-----------------------------------------------------------------------------------------------
         //CARGAR OBJETOS
         //-----------------------------------------------------------------------------------------------
-        etSearch = (EditText) findViewById(R.id.et_search);
+        //etSearch = (EditText) findViewById(R.id.et_search);
         btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
-        RelativeLayout btnSearch = (RelativeLayout) findViewById(R.id.mapa_btnSearch);
+        //RelativeLayout btnSearch = (RelativeLayout) findViewById(R.id.mapa_btnSearch);
         RelativeLayout boton = (RelativeLayout) findViewById(R.id.btn_DrawOpen);
 
         primerArranque = true;
@@ -172,20 +177,20 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //-----------------------------------------------------------------------------------------------
         //SETEAR EVENTOS
         //-----------------------------------------------------------------------------------------------
-        /*CAJA DE BUSQUEDA*/
+        /*CAJA DE BUSQUEDA
         etSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 etSearch.setCursorVisible(true);
             }
-        });
-        /*BOTON DE BUSQUEDA*/
+        });*/
+        /*BOTON DE BUSQUEDA
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BuscarDireccion();
             }
-        });
+        });*/
         /*BOTON DE INICIAR VIAJE*/
         btnIniciarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +230,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         updateValuesFromBundle(savedInstanceState);
         ArmarMenu();
         this.ManejarBoton();
-
+        ArmarBusquedas();
 
     }
 
@@ -608,6 +613,46 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
        // }
     }
+
+    public void ArmarBusquedas(){
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+        autocompleteFragment.setFilter(typeFilter);
+
+
+/*
+        AutocompleteFilter dd = new AutocompleteFilter.Builder()
+                .setTypeFilter(Place.TYPE_COUNTRY)
+                .setCountry("US")
+                .build();
+*/
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+
+                cameraBuilder = new LatLngBounds.Builder();
+                cameraBuilder.include(place.getLatLng());
+                cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
+
+                mMap.moveCamera(cu);
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(MAPA_ZOOM));
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                utilidades.MostrarMensaje(TAG, "An error occurred: " + status);
+            }
+        });
+    }
     //<<<<<------------------------------------------------------------------------------------------
 
 
@@ -982,7 +1027,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void BuscarDireccion() {
-
+        /*
         LatLng latLng = utilidades.DevolverLatLangDeDireccion(this, etSearch.getText().toString());
         CrearAlerta(latLng);
 
@@ -991,7 +1036,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         etSearch.setCursorVisible(false);
 
         hideSoftKeyboard();
-
+*/
     }
 
     public void hideSoftKeyboard() {

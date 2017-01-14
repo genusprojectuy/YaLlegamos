@@ -28,21 +28,36 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/borde_gris"
-            android:paddingBottom="2dp">
+            android:paddingBottom="2dp"
+            android:weightSum="1">
+
+
+
+            <RelativeLayout
+                android:layout_width="262dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.59">
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
+            </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/btn_DrawOpen"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/ic_menu"/>
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_menu"/>
             </RelativeLayout>
-
+            <!--
             <EditText
                 android:id="@+id/et_search"
                 android:layout_width="wrap_content"
@@ -60,6 +75,7 @@
                 android:textSize="18sp" />
 
 
+
             <RelativeLayout
                 android:id="@+id/mapa_btnSearch"
                 android:layout_width="wrap_content"
@@ -73,7 +89,7 @@
                 android:background="@drawable/ic_search"
                 android:tint="#838383" />
             </RelativeLayout>
-
+-->
 
         </LinearLayout>
 
