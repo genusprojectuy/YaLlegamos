@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -168,7 +169,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //etSearch = (EditText) findViewById(R.id.et_search);
         btnIniciarViaje = (Button) findViewById(R.id.btn_IniciarViaje);
         //RelativeLayout btnSearch = (RelativeLayout) findViewById(R.id.mapa_btnSearch);
-        RelativeLayout boton = (RelativeLayout) findViewById(R.id.btn_DrawOpen);
+        RelativeLayout boton    = (RelativeLayout) findViewById(R.id.btn_DrawOpen);
+        ImageView img_boton     = (ImageView) findViewById(R.id.img_DrawOpen);
 
         primerArranque = true;
 
@@ -213,6 +215,12 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         });
         /*BOTON DE MENU LATERAL*/
         boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+        img_boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(Gravity.LEFT);

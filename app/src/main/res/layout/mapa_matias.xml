@@ -21,7 +21,7 @@
             tools:context="com.genusproject.yallegamos.yallegamos.ui.Mapa" />
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
@@ -34,9 +34,10 @@
 
 
             <RelativeLayout
-                android:layout_width="262dp"
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.59">
+                android:layout_weight="1.59"
+                android:id="@+id/relativeLayout">
             <fragment
                 android:id="@+id/place_autocomplete_fragment"
                 android:layout_width="match_parent"
@@ -47,15 +48,20 @@
             <RelativeLayout
                 android:id="@+id/btn_DrawOpen"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/relativeLayout">
 
                 <ImageButton
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/ic_menu"/>
+                    android:background="@drawable/ic_menu"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+
+                    android:layout_centerVertical="true"
+                    android:id="@+id/img_DrawOpen"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </RelativeLayout>
             <!--
             <EditText
@@ -91,7 +97,7 @@
             </RelativeLayout>
 -->
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <!--  <Button
               android:id="@+id/btn_IniciarViaje"
