@@ -173,7 +173,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="1dp"
                        android:background="@color/colorCeleste" />
-                   <!--
+
                   <RelativeLayout
                       android:id="@+id/menu_viajes"
                       android:layout_width="match_parent"
@@ -199,7 +199,7 @@
                           android:layout_marginTop="10dp"
                           android:src="@drawable/ic_viajes" />
                   </RelativeLayout>
-                    -->
+
                   <RelativeLayout
                       android:id="@+id/menu_configuracion"
                       android:layout_width="match_parent"

@@ -390,7 +390,7 @@ public class AlarmaServicio extends IntentService{
             // Sets an ID for the notification, so it can be updated
             mNotifyBuilder = new NotificationCompat.Builder(getApplicationContext())
                     .setContentTitle("Iniciando viaje")
-                    .setContentText("Buscando el destino más proximo.")
+                    .setContentText("Buscando ubicación precisa.")
                     .setSmallIcon(R.mipmap.ic_notificacion);
 
             Intent notIntent            = new Intent(getApplicationContext(), Mapa.class);
@@ -415,7 +415,7 @@ public class AlarmaServicio extends IntentService{
                         if (alerta.getActiva().equals(SI) && alerta.getEstado().equals(PENDIENTE)) {
 
                             mNotifyBuilder.setContentTitle("Distancia del punto mas cercano")
-                                    .setContentText("Distancia: " + DOS_DECIMALES.format(alerta.getDistancia()));
+                                    .setContentText(alerta.getDireccion() + ": " + utilidades.Km_Mt(alerta.getDistancia()));
 
                             mNotificationManager.notify(
                                     NOTIFICACION_ID,

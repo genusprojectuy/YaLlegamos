@@ -80,15 +80,6 @@ public class ViajesAdapter extends ArrayAdapter {
         Date    l_d_hora;
 
 
-        if(item.getRecorrido().size() > 0)
-        {
-
-            l_origen    = item.getRecorrido().get(0).getLatitud_longitud();
-            l_o_hora    = item.getRecorrido().get(0).getFecha();
-
-            l_destino   = item.getRecorrido().get(item.getRecorrido().size() - 1).getLatitud_longitud();
-            l_d_hora    = item.getRecorrido().get(item.getRecorrido().size() - 1).getFecha();
-
             holder.fecha.setText(FECHA_HORA.format(item.getFecha()));
 
             holder.verViaje.setOnClickListener(new View.OnClickListener() {
@@ -103,17 +94,27 @@ public class ViajesAdapter extends ArrayAdapter {
                 }
             });
 
-            holder.origen.setText(utilidades.DevolverDirecciones(getContext(), l_origen, TipoDireccion.DIRECCION));
-            holder.o_hora.setText(HORA.format(l_o_hora));
+            holder.origen.setText(item.getDireccion_origen());
 
-            holder.destino.setText(utilidades.DevolverDirecciones(getContext(), l_destino, TipoDireccion.DIRECCION));
-            holder.d_hora.setText(HORA.format(l_d_hora));
+            if(item.getH_origen() != null)
+            {
+                holder.o_hora.setText(HORA.format(item.getH_origen()));
+            }
+            else
+            {
+                holder.o_hora.setText("-");
+            }
 
-        }
-        else
-        {
-            utilidades.MostrarMensaje(TAG, "No se recibio recorrido");
-        }
+            holder.destino.setText(item.getDireccion_destino());
+
+            if(item.getH_destino() != null)
+            {
+                holder.d_hora.setText(HORA.format(item.getH_destino()));
+            }
+            else
+            {
+                holder.d_hora.setText("-");
+            }
 
         return convertView;
     }

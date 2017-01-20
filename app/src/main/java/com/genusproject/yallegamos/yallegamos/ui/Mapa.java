@@ -770,10 +770,10 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //OPCIONES DE MENU CONFIGURACION Y VIAJES
         //--------------------------------------------------------------------------------
 
-        //RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
+        RelativeLayout viajes           = (RelativeLayout) findViewById(R.id.menu_viajes);
         RelativeLayout configuracion    = (RelativeLayout) findViewById(R.id.menu_configuracion);
 
-/*        viajes.setOnClickListener(new View.OnClickListener() {
+        viajes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Mapa.this, u_viajes.class);
@@ -782,7 +782,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
             }
         });
-*/
+
         configuracion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

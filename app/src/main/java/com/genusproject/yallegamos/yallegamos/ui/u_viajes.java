@@ -6,6 +6,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,7 +51,12 @@ public class u_viajes extends AppCompatActivity {
     }
 
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_viajes, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -63,6 +70,7 @@ public class u_viajes extends AppCompatActivity {
                 builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button
+                        EliminarTodosLosRecorridos();
                         dialog.cancel();
                     }
                 });
@@ -73,8 +81,8 @@ public class u_viajes extends AppCompatActivity {
                     }
                 });
 
-                builder.setTitle("Eliminar viaje");
-                builder.setMessage("Desea eliminar el recorrido?");
+                builder.setTitle("Eliminar viajes");
+                builder.setMessage("Desea eliminar todos los recorridos?");
 
                 // Create the AlertDialog
                 AlertDialog dialog = builder.create();
@@ -136,5 +144,10 @@ public class u_viajes extends AppCompatActivity {
     public void CargarDatos(){
         lstViajes = p.ViajeDevolverLista();
         list.setAdapter(new ViajesAdapter(this, lstViajes));
+    }
+
+    private void EliminarTodosLosRecorridos(){
+        p.DelTodosViajes();
+        CargarDatos();
     }
 }

@@ -14,6 +14,7 @@ import com.genusproject.yallegamos.yallegamos.entidades.Configuracion;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
+import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -37,6 +38,8 @@ public final class PersistenciaBD {
     private static final String TEXT_TYPE           = " TEXT";
     private static final String NUM_TYPE            = " INTEGER";
     private static final String COMMA_SEP           = ",";
+    private Context contexto;
+
     /*ALERTA*/
     private static final String SQL_DELETE_ALERTA = "DROP TABLE IF EXISTS " + alertaReg.ALERTA_TABLE_NAME;
     private static final String SQL_CREATE_ALERTA =
@@ -96,8 +99,9 @@ public final class PersistenciaBD {
     //MANEJADOR
     //----------------------------------------------------------------------------------------
     private PersistenciaBD(Context context) {
-        utilidades = Utilidades.getInstance();
-        mDbHelper = new ManejadorDBHelper(context);
+        utilidades      = Utilidades.getInstance();
+        this.contexto   = context;
+        mDbHelper       = new ManejadorDBHelper(context);
     }
     //-----------------------------------------------------------------------
     public static final PersistenciaBD getInstancia(Context context){
@@ -442,7 +446,20 @@ public final class PersistenciaBD {
 
                 v.setFecha(fecha);
 
-                //v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
+                v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
+
+                if(!v.getRecorrido().isEmpty())
+                {
+                    v.setOrigen(v.getRecorrido().get(0).getLatitud_longitud());
+                    v.setH_origen(v.getRecorrido().get(0).getFecha());
+
+                    v.setDestino(v.getRecorrido().get(v.getRecorrido().size() - 1).getLatitud_longitud());
+                    v.setH_destino(v.getRecorrido().get(v.getRecorrido().size() - 1).getFecha());
+
+                    v.setDireccion_origen(utilidades.DevolverDirecciones(this.contexto, v.getOrigen(), TipoDireccion.DIRECCION));
+                    v.setDireccion_destino(utilidades.DevolverDirecciones(this.contexto, v.getDestino(), TipoDireccion.DIRECCION));
+                }
+
 
                 viaje.add(v);
             } while (c.moveToNext());

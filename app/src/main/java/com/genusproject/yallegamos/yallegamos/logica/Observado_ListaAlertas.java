@@ -7,6 +7,7 @@ import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.entidades.Configuracion;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
+import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
 import com.genusproject.yallegamos.yallegamos.persistencia.PersistenciaBD;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
@@ -168,16 +169,16 @@ public class Observado_ListaAlertas extends Observable {
     //VIAJE
     //-----------------------------------------------------------------------------------------------------------------------
     public long AddViaje(Viaje viaje){
-        //viaje.set_ID(alertaT.ViajeAgregar(viaje));
-        //viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
+        viaje.set_ID(alertaT.ViajeAgregar(viaje));
+        viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
         viaje.set_ID(1);
         this.v = viaje;
-        //lstViajes.add(viaje);
+        lstViajes.add(viaje);
         return  viaje.get_ID();
     }
 
     public void ModViaje(Viaje viaje){
-        /*
+
         utilidades.MostrarMensaje(TAG, "Modificando viaje " + viaje.toString());
         alertaT.ViajeModificar(viaje);
 
@@ -192,11 +193,11 @@ public class Observado_ListaAlertas extends Observable {
         }
 
         lstViajes.set(posicion, viaje);
-        */
+
     }
 
     public void DelViaje(Viaje viaje){
-        /*
+
         alertaT.ViajeEliminar(viaje.get_ID());
 
         int posicion = 0;
@@ -210,13 +211,24 @@ public class Observado_ListaAlertas extends Observable {
         }
 
         lstViajes.remove(posicion);
-        */
+
+    }
+
+    public void DelTodosViajes(){
+
+        for(Viaje v : lstViajes)
+        {
+            alertaT.ViajeEliminar(v.get_ID());
+        }
+
+        lstViajes.clear();
+
     }
 
     public Viaje ViajeDevolver(long _ID){
 
         Viaje retViaje = new Viaje();
-        /*
+
         for(Viaje unViaje : lstViajes)
         {
             if (unViaje.get_ID() == _ID)
@@ -225,7 +237,7 @@ public class Observado_ListaAlertas extends Observable {
                 break;
             }
         }
-        */
+
         return retViaje;
     }
 
@@ -234,7 +246,7 @@ public class Observado_ListaAlertas extends Observable {
     }
 
     public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
-        /*
+
         alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
         ViajeRecorrido vr = new ViajeRecorrido();
         vr.setLatitud_longitud(latLng);
@@ -242,6 +254,18 @@ public class Observado_ListaAlertas extends Observable {
 
         viaje.getRecorrido().add(vr);
         v.getRecorrido().add(vr);
+
+        if(!viaje.getRecorrido().isEmpty())
+        {
+            viaje.setOrigen(viaje.getRecorrido().get(0).getLatitud_longitud());
+            viaje.setH_origen(viaje.getRecorrido().get(0).getFecha());
+
+            viaje.setDestino(viaje.getRecorrido().get(viaje.getRecorrido().size() - 1).getLatitud_longitud());
+            viaje.setH_destino(viaje.getRecorrido().get(viaje.getRecorrido().size() - 1).getFecha());
+
+            viaje.setDireccion_origen(utilidades.DevolverDirecciones(this.context, viaje.getOrigen(), TipoDireccion.DIRECCION));
+            viaje.setDireccion_destino(utilidades.DevolverDirecciones(this.context, viaje.getDestino(), TipoDireccion.DIRECCION));
+        }
 
 
         int posicion = 0;
@@ -255,7 +279,7 @@ public class Observado_ListaAlertas extends Observable {
         }
 
         lstViajes.set(posicion, viaje);
-        */
+
         return viaje;
     }
 
@@ -263,6 +287,9 @@ public class Observado_ListaAlertas extends Observable {
         return v;
     }
 
+    //----------------------------------------------------------------------
+    //CONFIGURACION
+    //----------------------------------------------------------------------
     public Configuracion DevolverConfiguracion(){
 
         if(this.configuracion == null) {

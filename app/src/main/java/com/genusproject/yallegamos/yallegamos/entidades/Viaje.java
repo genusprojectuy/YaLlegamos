@@ -3,6 +3,7 @@ package com.genusproject.yallegamos.yallegamos.entidades;
 import com.genusproject.yallegamos.yallegamos.enumerados.EstadoViaje;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +18,18 @@ public class Viaje {
     private List<ViajeRecorrido> recorrido;
     private List<Alerta> alertas;
 
+    private LatLng origen;
+    private String direccion_origen;
+    private Date h_origen;
+    private LatLng destino;
+    private String direccion_destino;
+    private Date h_destino;
+
 
 
 
     public Viaje() {
+        recorrido = new ArrayList<ViajeRecorrido>();
     }
 
     public long get_ID() {
@@ -63,6 +72,54 @@ public class Viaje {
         this.alertas = alertas;
     }
 
+    public LatLng getOrigen() {
+        return origen;
+    }
+
+    public void setOrigen(LatLng origen) {
+        this.origen = origen;
+    }
+
+    public Date getH_origen() {
+        return h_origen;
+    }
+
+    public void setH_origen(Date h_origen) {
+        this.h_origen = h_origen;
+    }
+
+    public LatLng getDestino() {
+        return destino;
+    }
+
+    public void setDestino(LatLng destino) {
+        this.destino = destino;
+    }
+
+    public Date getH_destino() {
+        return h_destino;
+    }
+
+    public void setH_destino(Date h_destino) {
+        this.h_destino = h_destino;
+    }
+
+    public String getDireccion_origen() {
+        return direccion_origen;
+    }
+
+    public void setDireccion_origen(String direccion_origen) {
+        this.direccion_origen = direccion_origen;
+    }
+
+    public String getDireccion_destino() {
+        return direccion_destino;
+    }
+
+    public void setDireccion_destino(String direccion_destino) {
+        this.direccion_destino = direccion_destino;
+    }
+
     @Override
     public String toString() {
         return "Viaje{" +
@@ -71,6 +128,12 @@ public class Viaje {
                 ", estado=" + estado +
                 ", recorrido=" + recorrido +
                 ", alertas=" + alertas +
+                ", origen=" + origen +
+                ", direccion_origen='" + direccion_origen + '\'' +
+                ", h_origen=" + h_origen +
+                ", destino=" + destino +
+                ", direccion_destino='" + direccion_destino + '\'' +
+                ", h_destino=" + h_destino +
                 '}';
     }
 }
