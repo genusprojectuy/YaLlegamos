@@ -250,6 +250,10 @@ public class Utilidades {
 
     private String CalcularDuracion_2(int valor)
     {
+        if(valor<0)
+        {
+            valor = valor * -1;
+        }
         if(valor < 10)
         {
             return "0" + Integer.toString(valor);
