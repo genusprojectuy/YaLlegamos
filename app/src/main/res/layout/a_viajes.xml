@@ -14,6 +14,5 @@
         android:choiceMode="singleChoice"
         android:background="@color/colorWhite"
         android:divider="#ccc"
-        android:dividerHeight="1dp"
-        android:paddingRight="15dp"/>
+        android:dividerHeight="1dp"/>
 </RelativeLayout>

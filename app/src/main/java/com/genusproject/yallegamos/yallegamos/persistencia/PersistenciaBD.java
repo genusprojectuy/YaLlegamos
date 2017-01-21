@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FECHA_HORA;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FECHA_HORA_S;
 
 /**
  * Created by alvar on 28/09/2016.
@@ -342,7 +343,7 @@ public final class PersistenciaBD {
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_VIAJE, String.valueOf(ID));
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_LAT, String.valueOf(latLng.latitude));
         ubicacionReg.put(recorridoReg.RECORRIDO_COL_LONG, String.valueOf(latLng.longitude));
-        ubicacionReg.put(recorridoReg.RECORRIDO_COL_FECHA, FECHA_HORA.format(fecha));
+        ubicacionReg.put(recorridoReg.RECORRIDO_COL_FECHA, FECHA_HORA_S.format(fecha));
 
         db.insert(recorridoReg.RECORRIDO_TABLE_NAME, null, ubicacionReg);
 
@@ -448,19 +449,6 @@ public final class PersistenciaBD {
 
                 v.setRecorrido(RecorridoDevolverLista(v.get_ID()));
 
-                if(!v.getRecorrido().isEmpty())
-                {
-                    v.setOrigen(v.getRecorrido().get(0).getLatitud_longitud());
-                    v.setH_origen(v.getRecorrido().get(0).getFecha());
-
-                    v.setDestino(v.getRecorrido().get(v.getRecorrido().size() - 1).getLatitud_longitud());
-                    v.setH_destino(v.getRecorrido().get(v.getRecorrido().size() - 1).getFecha());
-
-                    v.setDireccion_origen(utilidades.DevolverDirecciones(this.contexto, v.getOrigen(), TipoDireccion.DIRECCION));
-                    v.setDireccion_destino(utilidades.DevolverDirecciones(this.contexto, v.getDestino(), TipoDireccion.DIRECCION));
-                }
-
-
                 viaje.add(v);
             } while (c.moveToNext());
 
@@ -542,7 +530,7 @@ public final class PersistenciaBD {
 
                 java.util.Date fecha = null;
                 try {
-                    fecha = FECHA_HORA.parse(f);
+                    fecha = FECHA_HORA_S.parse(f);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

@@ -405,7 +405,6 @@ public class AlarmaServicio extends IntentService{
         }
 
         public void ActualizarNotificacion(){
-            utilidades.MostrarMensaje(TAG, "Actualizar notificacion");
             if(lstAlerta != null)
             {
                 if(lstAlerta.size() > 0 )

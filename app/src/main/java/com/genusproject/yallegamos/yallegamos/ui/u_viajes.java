@@ -2,6 +2,7 @@ package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIAJE_ID;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
 
 public class u_viajes extends AppCompatActivity {
@@ -36,16 +38,24 @@ public class u_viajes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_viajes);
 
-       // ActionBar actionBar = getSupportActionBar();
-       // actionBar.setHomeButtonEnabled(true);
-       // actionBar.setDisplayHomeAsUpEnabled(true);
-       // actionBar.setTitle("Viajes");
-       // actionBar.show();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Viajes");
+        actionBar.show();
 
         utilidades = Utilidades.getInstance();
         p = Observado_ListaAlertas.getInstance(getApplicationContext());
 
-        CargarLista();
+
+        new Thread(new Runnable() {
+            public void run() {
+                //Aquí ejecutamos nuestras tareas costosas
+                CargarLista();
+            }
+        }).start();
+
+
 
 
     }
@@ -138,12 +148,27 @@ public class u_viajes extends AppCompatActivity {
             }
         });
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Viaje yourData = lstViajes.get(position);
+                Intent intent = new Intent(getApplicationContext(), VerViaje.class);
+                intent.putExtra(VIAJE_ID, yourData.get_ID());
+                startActivity(intent);
+            }
+
+            });
 
     }
 
     public void CargarDatos(){
         lstViajes = p.ViajeDevolverLista();
-        list.setAdapter(new ViajesAdapter(this, lstViajes));
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                list.setAdapter(new ViajesAdapter(getApplicationContext(), lstViajes));
+            }});
     }
 
     private void EliminarTodosLosRecorridos(){

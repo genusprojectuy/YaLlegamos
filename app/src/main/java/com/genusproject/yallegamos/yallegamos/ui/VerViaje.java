@@ -9,7 +9,9 @@ import android.widget.Toast;
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
-import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;import com.google.android.gms.maps.CameraUpdate;
+import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
+import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +34,8 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
     private Polyline polyline;
     private LatLngBounds.Builder cameraBuilder;
     private CameraUpdate cu;
+    private Utilidades utilidades;
+    private String TAG = this.getClass().getSimpleName().toUpperCase().trim();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,9 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
         Intent intent = getIntent();
         viaje = o.ViajeDevolver(intent.getLongExtra(VIAJE_ID,0));
 
+        utilidades = Utilidades.getInstance();
+
+
 
     }
 
@@ -55,8 +62,16 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
         mMap = googleMap;
 
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        DibujarRecorrido();
-        MoverCamaraTodosMarcadores();
+
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                DibujarRecorrido();
+                MoverCamaraTodosMarcadores();
+            }
+        });
+
+
     }
 
 
@@ -90,16 +105,23 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
 
     public void MoverCamaraTodosMarcadores(){
 
-        cameraBuilder = new LatLngBounds.Builder();
+        if (viaje != null) {
+            if(!viaje.getRecorrido().isEmpty())
+            {
+                cameraBuilder = new LatLngBounds.Builder();
 
-        for(ViajeRecorrido vr: viaje.getRecorrido()){
-            cameraBuilder.include(vr.getLatitud_longitud());
+
+                for(ViajeRecorrido vr: viaje.getRecorrido()){
+                    cameraBuilder.include(vr.getLatitud_longitud());
+                }
+
+                cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
+
+                mMap.moveCamera(cu);
+                mMap.animateCamera(cu);
+
+            }
         }
-
-            cu = CameraUpdateFactory.newLatLngBounds(cameraBuilder.build(), MAPA_PADDING);
-
-            mMap.moveCamera(cu);
-            mMap.animateCamera(cu);
 
     }
 }

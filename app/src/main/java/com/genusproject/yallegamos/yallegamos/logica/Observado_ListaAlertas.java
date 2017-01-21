@@ -13,8 +13,11 @@ import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Observable;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.NO;
@@ -171,7 +174,6 @@ public class Observado_ListaAlertas extends Observable {
     public long AddViaje(Viaje viaje){
         viaje.set_ID(alertaT.ViajeAgregar(viaje));
         viaje.setRecorrido(new ArrayList<ViajeRecorrido>());
-        viaje.set_ID(1);
         this.v = viaje;
         lstViajes.add(viaje);
         return  viaje.get_ID();
@@ -238,22 +240,28 @@ public class Observado_ListaAlertas extends Observable {
             }
         }
 
-        return retViaje;
+        return ViajeCargarDatosDinamicos(retViaje);
     }
 
     public List<Viaje> ViajeDevolverLista(){
+
+        for (ListIterator<Viaje> i = lstViajes.listIterator(); i.hasNext();) {
+            Viaje element = i.next();
+            i.set(this.ViajeCargarDatosDinamicos(element));
+        }
+
+        Collections.sort(lstViajes, new Comparator<Viaje>(){
+            public int compare(Viaje o1, Viaje o2){
+                if(o1.getFecha().compareTo(o2.getFecha()) == 0)
+                    return 0;
+                return o1.getFecha().compareTo(o2.getFecha()) > 0  ? -1 : 1;
+            }
+        });
+
         return lstViajes;
     }
 
-    public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
-
-        alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
-        ViajeRecorrido vr = new ViajeRecorrido();
-        vr.setLatitud_longitud(latLng);
-        vr.setFecha(new Date());
-
-        viaje.getRecorrido().add(vr);
-        v.getRecorrido().add(vr);
+    private Viaje ViajeCargarDatosDinamicos(Viaje viaje){
 
         if(!viaje.getRecorrido().isEmpty())
         {
@@ -265,8 +273,59 @@ public class Observado_ListaAlertas extends Observable {
 
             viaje.setDireccion_origen(utilidades.DevolverDirecciones(this.context, viaje.getOrigen(), TipoDireccion.DIRECCION));
             viaje.setDireccion_destino(utilidades.DevolverDirecciones(this.context, viaje.getDestino(), TipoDireccion.DIRECCION));
+
+
+            float distancia             = 0;
+            ViajeRecorrido c_anterior   = null;
+            ViajeRecorrido c_distancia  = null;
+            long duracion               = 0;
+
+
+            for(ViajeRecorrido vr : viaje.getRecorrido())
+            {
+
+                /*DISTANCIA*/
+                if(c_distancia != null){
+                    /*Realizo esto, para que no sume variaciones de distancia inferior a 100 metros, esto lo hago para evitar que sume cada coordenada que puede surgir por falla de presision*/
+                    float auxDistancia = utilidades.DistanceTo(c_distancia.getLatitud_longitud(), vr.getLatitud_longitud());
+                    if(auxDistancia >= 100)
+                    {
+                        distancia += auxDistancia;
+                        c_distancia = vr;
+                    }
+                }
+                else{
+                    c_distancia = vr;
+                }
+
+                /*DURACION*/
+                if(c_anterior != null)
+                {
+                    duracion += (vr.getFecha().getTime() - c_anterior.getFecha().getTime());
+                }
+
+                c_anterior = vr;
+
+            }
+
+
+            viaje.setDistanciaRecorrida(distancia);
+            viaje.setDuracion(duracion);
         }
 
+
+        return viaje;
+    }
+
+    public Viaje ViajeAgregarLatLang(Viaje viaje, LatLng latLng){
+
+        alertaT.ViajeAgregarLatLang(viaje.get_ID(), latLng);
+        ViajeRecorrido vr = new ViajeRecorrido();
+        vr.setLatitud_longitud(latLng);
+        vr.setFecha(new Date());
+
+        viaje.getRecorrido().add(vr);
+        v.getRecorrido().add(vr);
 
         int posicion = 0;
         for(Viaje unViaje : lstViajes)

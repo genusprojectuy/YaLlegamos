@@ -59,7 +59,7 @@
                 android:text="Desde Canelones 1840 - Hora 21:50" />
 
             <TextView
-                android:id="@+id/v_txt_d_hora"
+                android:id="@+id/v_txt_destino"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorGrisClaro"
@@ -68,7 +68,7 @@
                 android:text="Hasta Cuareim 1442 158 3569 sadwe 56- Hora 22:10" />
 
             <TextView
-                android:id="@+id/txt_distanciaRecorrida"
+                android:id="@+id/v_txt_distanciaRecorrida"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
@@ -76,7 +76,7 @@
                 android:text="Distancia recorrida: 125 km" />
 
             <TextView
-                android:id="@+id/txt_tiempo_demorado"
+                android:id="@+id/v_txt_tiempo_demorado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorGrisClaro"
@@ -85,20 +85,6 @@
                 android:text="Tiempo: 1 hora 20 minutos" />
 
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/v_txt_Destino"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Finalizó el viaje en" />
-
-        <TextView
-            android:id="@+id/v_txt_o_hora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hora Finalizado el viaje" />
 
 
         <LinearLayout

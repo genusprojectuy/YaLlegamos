@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.entidades.Alerta;
 import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
+import com.genusproject.yallegamos.yallegamos.enumerados.Tags;
 import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
 import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.ui.Mapa;
@@ -60,73 +61,38 @@ public class ViajesAdapter extends ArrayAdapter {
             holder = new ViewHolder();
 
             holder.fecha      = (TextView) convertView.findViewById(R.id.v_txt_fecha);
-            holder.verViaje   = (ImageView) convertView.findViewById(R.id.v_img_btn_map);
             holder.origen     = (TextView) convertView.findViewById(R.id.v_txt_origen);
-            holder.o_hora     = (TextView) convertView.findViewById(R.id.v_txt_o_hora);
-            holder.destino    = (TextView) convertView.findViewById(R.id.v_txt_Destino);
-            holder.d_hora     = (TextView) convertView.findViewById(R.id.v_txt_d_hora);
+            holder.destino    = (TextView) convertView.findViewById(R.id.v_txt_destino);
+            holder.distancia  = (TextView) convertView.findViewById(R.id.v_txt_distanciaRecorrida);
+            holder.tiempo     = (TextView) convertView.findViewById(R.id.v_txt_tiempo_demorado);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final Viaje item     = (Viaje) getItem(position);
+        Viaje item     = (Viaje) getItem(position);
 
-        LatLng  l_origen;
-        Date    l_o_hora;
-
-        LatLng  l_destino;
-        Date    l_d_hora;
-
-
-            holder.fecha.setText(FECHA_HORA.format(item.getFecha()));
-
-            holder.verViaje.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    Intent intent = new Intent(getContext(), VerViaje.class);
-                    intent.putExtra(VIAJE_ID, item.get_ID());
-                    getContext().startActivity(intent);
+        holder.fecha.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_fecha), item.getFecha(), Tags.FECHA));
+        holder.origen.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_origen), item.getDireccion_origen(), Tags.DIRECCION));
+        holder.origen.setText(utilidades.ReemplazarTags((String) holder.origen.getText(), item.getH_origen(), Tags.HORA));
+        holder.destino.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_destino), item.getDireccion_destino(), Tags.DIRECCION));
+        holder.destino.setText(utilidades.ReemplazarTags((String) holder.destino.getText(), item.getH_destino(), Tags.HORA));
+        holder.distancia.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_distancia), item.getDistanciaRecorrida(), Tags.DISTANCIA));
+        holder.tiempo.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_tiempo), item.getDuracion(), Tags.TIEMPO));
 
 
-                }
-            });
-
-            holder.origen.setText(item.getDireccion_origen());
-
-            if(item.getH_origen() != null)
-            {
-                holder.o_hora.setText(HORA.format(item.getH_origen()));
-            }
-            else
-            {
-                holder.o_hora.setText("-");
-            }
-
-            holder.destino.setText(item.getDireccion_destino());
-
-            if(item.getH_destino() != null)
-            {
-                holder.d_hora.setText(HORA.format(item.getH_destino()));
-            }
-            else
-            {
-                holder.d_hora.setText("-");
-            }
-
-        return convertView;
+    return convertView;
     }
 
     private static class ViewHolder {
         public TextView fecha;
-        public ImageView verViaje;
         public TextView origen;
-        public TextView o_hora;
         public TextView destino;
-        public TextView d_hora;
+        public TextView distancia;
+        public TextView tiempo;
     }
+
 
 
     /*SEGUNDO METODO, COMPROBANDO OPTIMIZACION*/

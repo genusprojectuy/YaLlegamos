@@ -37,11 +37,12 @@ public final class Constantes {
     public static int COLOR_ALERTA     = Color.rgb(249, 153, 0);
 
 
-    public static int MAPA_PADDING      = 200;
-    public static int MAPA_ZOOM         = 15;
-    public static int MAPA_LINEA_WIDTH  = 10;
-    public static int MAPA_LINEA_COLOR  = Color.BLUE;
-    public static int BOTON_DURACION    = 1000;
+    public static int MAPA_PADDING          = 200;
+    public static int MAPA_SUPER_PADDING    = 500;
+    public static int MAPA_ZOOM             = 15;
+    public static int MAPA_LINEA_WIDTH      = 10;
+    public static int MAPA_LINEA_COLOR      = Color.BLUE;
+    public static int BOTON_DURACION        = 1000;
 
     public static int LED_INICIO    = 1;
     public static int LED_FIN       = 60000;
@@ -49,9 +50,13 @@ public final class Constantes {
     public static DecimalFormat DOS_DECIMALES = new DecimalFormat("###.##");
     public static SimpleDateFormat HORA = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat FECHA_HORA = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    public static SimpleDateFormat FECHA_HORA_S = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     public static boolean SIN_NOTIFICAR     = false;
     public static boolean NOTIFICAR         = true;
+
+
+    //REEMPLAZAR
 
 
 }

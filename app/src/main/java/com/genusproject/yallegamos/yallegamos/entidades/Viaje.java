@@ -24,6 +24,8 @@ public class Viaje {
     private LatLng destino;
     private String direccion_destino;
     private Date h_destino;
+    private float distanciaRecorrida;
+    private long duracion;
 
 
 
@@ -118,6 +120,22 @@ public class Viaje {
 
     public void setDireccion_destino(String direccion_destino) {
         this.direccion_destino = direccion_destino;
+    }
+
+    public float getDistanciaRecorrida() {
+        return distanciaRecorrida;
+    }
+
+    public void setDistanciaRecorrida(float distanciaRecorrida) {
+        this.distanciaRecorrida = distanciaRecorrida;
+    }
+
+    public long getDuracion() {
+        return duracion;
+    }
+
+    public void setDuracion(long duracion) {
+        this.duracion = duracion;
     }
 
     @Override
