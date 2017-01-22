@@ -39,6 +39,7 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_ALE
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.COLOR_AREA_ALERTA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.LED_FIN;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.LED_INICIO;
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_DIFERENCIA_MINIMA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PRESISION_MINIMA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SI;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.DOS_DECIMALES;
@@ -155,6 +156,7 @@ public class AlarmaServicio extends IntentService{
     public class MyLocationListener implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, Observer {
         private LocationRequest mLocationRequest;
         private Location mCurrentLocation;
+        private Location locationAnterior;
         private GoogleApiClient client;
         private NotificationCompat.Builder mNotifyBuilder;
 
@@ -231,9 +233,24 @@ public class AlarmaServicio extends IntentService{
             utilidades.MostrarMensaje(TAG, "Presición de la ubicación en metros: " + String.valueOf(location.getAccuracy()));
             mCurrentLocation    = location;
 
-            if(location.getAccuracy() <= MAPA_PRESISION_MINIMA) {
-                verificarAlertas();
+
+            if(locationAnterior != null) {
+                LatLng origen   = new LatLng(locationAnterior.getLatitude(), locationAnterior.getLongitude());
+                LatLng destino  = new LatLng(location.getLatitude(), location.getLongitude());
+
+                if (location.getAccuracy() <= MAPA_PRESISION_MINIMA && utilidades.DistanceTo(origen,  destino) >= MAPA_DIFERENCIA_MINIMA) {
+                    utilidades.MostrarMensaje(TAG, "Dentro de la presision y dentro de la distancia minima");
+                    verificarAlertas();
+                    locationAnterior    = location;
+                }
             }
+            else
+            {
+                verificarAlertas();
+                locationAnterior    = location;
+            }
+
+
 
         }
 

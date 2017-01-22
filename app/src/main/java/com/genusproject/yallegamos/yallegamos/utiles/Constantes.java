@@ -22,6 +22,7 @@ public final class Constantes {
     public static long UPDATE_INTERVAL_IN_MILLISECONDS              = 10 * 1000;
     public static long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS      = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     public static float MAPA_PRESISION_MINIMA                       = 50;
+    public static float MAPA_DIFERENCIA_MINIMA                      = 50;
 
     public static int AREA_OPACIDAD     = 50;
     public static int BORDER_WIDTH      = 3;

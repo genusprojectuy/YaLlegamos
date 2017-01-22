@@ -233,7 +233,6 @@ public class Utilidades {
     private String CalcularDuracion(long time)
     {
 
-        String retorno = "";
         float seconds = (time / 1000);
         float minuts = seconds / 60;
         float hour = minuts / 60;
