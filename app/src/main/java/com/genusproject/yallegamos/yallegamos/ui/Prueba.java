@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
+import android.graphics.Color;
+import android.os.Build;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,9 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
+import android.widget.AutoCompleteTextView;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
@@ -60,12 +66,14 @@ public class Prueba extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) findViewById(R.id.prueba_search);
 
+
+
         utilidades = Utilidades.getInstance();
 
         final String[] from = new String[] {"cityName"};
-        final int[] to = new int[] {android.R.id.text1};
+        final int[] to = new int[] {R.id.listTextView};
         mAdapter = new SimpleCursorAdapter(getApplication(),
-                android.R.layout.simple_list_item_1,
+                R.layout.listalayout,
                 null,
                 from,
                 to,
@@ -101,6 +109,10 @@ public class Prueba extends AppCompatActivity {
                 return false;
             }
         });
+
+
+     //   TextView autoComplete = (TextView) findViewById(R.id.text1);
+       // autoComplete.setTextColor(Color.BLUE);
 
     }
 
