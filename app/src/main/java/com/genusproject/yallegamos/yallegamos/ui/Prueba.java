@@ -3,13 +3,17 @@ package com.genusproject.yallegamos.yallegamos.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.MatrixCursor;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
+import android.widget.CursorAdapter;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
@@ -29,125 +33,85 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
-public class Prueba extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Prueba extends AppCompatActivity {
 
     Utilidades utilidades;
     String TAG = this.getClass().getSimpleName().toUpperCase().trim();
-    private GoogleApiClient client;
+
+    private static final ArrayList<String> SUGGESTIONS = new ArrayList<String>();
+
+
+    private SimpleCursorAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prueba);
-        buildGoogleApiClient();
+
+        SUGGESTIONS.add("Bauru");
+        SUGGESTIONS.add("Sao Paulo");
+        SUGGESTIONS.add("Rio de Janeiro");
+        SUGGESTIONS.add("Bahia");
+        SUGGESTIONS.add("Mato Grosso");
+        SUGGESTIONS.add("Minas Gerais");
+        SUGGESTIONS.add("Tocantins");
+        SUGGESTIONS.add("Rio Grande do Sul");
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) findViewById(R.id.prueba_search);
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
 
         utilidades = Utilidades.getInstance();
 
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            final String query = intent.getStringExtra(SearchManager.QUERY);
+        final String[] from = new String[] {"cityName"};
+        final int[] to = new int[] {android.R.id.text1};
+        mAdapter = new SimpleCursorAdapter(getApplication(),
+                android.R.layout.simple_list_item_1,
+                null,
+                from,
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
-            utilidades.MostrarMensaje(TAG, "Hace algo");
+        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setIconifiedByDefault(false);
+        // Getting selected (clicked) item suggestion
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                // Your code here
+                utilidades.MostrarMensaje(TAG, "Click " + Integer.toString(position));
+                return true;
+            }
 
-            new Thread(new Runnable() {
-                public void run() {
-                    //Aquí ejecutamos nuestras tareas costosas
-                    doMySearch(query);
-                }
-            }).start();
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                // Your code here
+                utilidades.MostrarMensaje(TAG, "Selected " + Integer.toString(position));
+                return true;
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String s) {
+                populateAdapter(s);
+                return false;
+            }
+        });
+
+    }
+
+    // You must implements your logic to get data using OrmLite
+    private void populateAdapter(String query) {
+        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName" });
+        for (int i=0; i<SUGGESTIONS.size(); i++) {
+            if (SUGGESTIONS.get(i).toLowerCase().startsWith(query.toLowerCase()))
+                c.addRow(new Object[] {i, SUGGESTIONS.get(i)});
         }
-
+        mAdapter.changeCursor(c);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.disconnect();
-    }
-
-    private synchronized void buildGoogleApiClient() {
-        client =  new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-
-    }
-
-    public void doMySearch(String query){
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
-                .build();
-
-        PendingResult<AutocompletePredictionBuffer> result =
-                Places.GeoDataApi.getAutocompletePredictions(client, query,
-                        null, typeFilter);
-
-
-        // This method should have been called off the main UI thread. Block and wait for at most 60s
-        // for a result from the API.
-        AutocompletePredictionBuffer autocompletePredictions = result.await(60, TimeUnit.SECONDS);
-
-
-        // Confirm that the query completed successfully, otherwise return null
-        final Status status = autocompletePredictions.getStatus();
-        if (!status.isSuccess()) {
-            autocompletePredictions.release();
-            utilidades.MostrarMensaje(TAG, "Algo");
-        }
-
-        // Copy the results into our own data structure, because we can't hold onto the buffer.
-        // AutocompletePrediction objects encapsulate the API response (place ID and description).
-        Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
-        //ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
-        while (iterator.hasNext()) {
-            AutocompletePrediction prediction = iterator.next();
-            // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
-            //resultList.add(new PlaceAutocomplete.(prediction.getPlaceId(),
-            //        prediction.getPlaceId()));
-            utilidades.MostrarMensaje(TAG, "aaa " + prediction.getPlaceId());
-
-            utilidades.MostrarMensaje(TAG, "aaa " + prediction.getFullText(null));
-        }
-
-        // Release the buffer now that all data has been copied.
-        autocompletePredictions.release();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 }
