@@ -1243,30 +1243,28 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             //resultList.add(new PlaceAutocomplete.(prediction.getPlaceId(),
             //        prediction.getPlaceId()));
 
-            utilidades.MostrarMensaje(TAG, "bbb " + prediction.getFullText(null));
             //SUGGESTIONS.add(prediction.getFullText(null).toString());
             c.addRow(new Object[] {i, prediction.getFullText(null).toString(), prediction.getPlaceId()});
 
             i +=1;
 
-        }
 
-        // Release the buffer now that all data has been copied.
-        autocompletePredictions.release();
+        }
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-
-                utilidades.MostrarMensaje(TAG, c.getCount() + " -----");
                 mAdapter.changeCursor(c);
-
-
-
+                mAdapter.notifyDataSetChanged();
 
             }
         });
+
+        // Release the buffer now that all data has been copied.
+        autocompletePredictions.release();
+
+
     }
 
 
