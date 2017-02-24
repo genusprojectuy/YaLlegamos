@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.BaseColumns;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -34,12 +36,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.SeekBar;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,11 +66,17 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdate;
@@ -87,6 +98,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_LINEA_COLOR;
@@ -108,6 +120,7 @@ import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.SIN_NOTIF
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.VIBRAR_LONG;
 
@@ -140,6 +153,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private Polyline polyline;
     private boolean primerArranque;
     private boolean primerServicio;
+    private MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName", "cityCode"});
+    private SimpleCursorAdapter mAdapter;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -179,36 +194,11 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         //-----------------------------------------------------------------------------------------------
         //SETEAR EVENTOS
         //-----------------------------------------------------------------------------------------------
-        /*CAJA DE BUSQUEDA
-        etSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                etSearch.setCursorVisible(true);
-            }
-        });*/
-        /*BOTON DE BUSQUEDA
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BuscarDireccion();
-            }
-        });*/
+
         /*BOTON DE INICIAR VIAJE*/
         btnIniciarViaje.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-               /*
-
-                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(Mapa.this, R.animator.flip);
-
-                anim.setTarget(btnIniciarViaje);
-                anim.setDuration(BOTON_DURACION);
-
-                anim.start();
-*/
-
-
                 ManejarServicio();
                 MoverCamaraTodosMarcadores();
             }
@@ -623,37 +613,68 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     }
 
     public void ArmarBusquedas(){
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
-                .build();
 
-        autocompleteFragment.setFilter(typeFilter);
+        final SearchView searchView = (SearchView) findViewById(R.id.search_place);
 
-/*
-        AutocompleteFilter dd = new AutocompleteFilter.Builder()
-                .setTypeFilter(Place.TYPE_COUNTRY)
-                .setCountry("US")
-                .build();
-*/
 
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        final String[] from = new String[] {"cityName"};
+        final int[] to = new int[] {R.id.listTextView};
+        mAdapter = new SimpleCursorAdapter(getApplication(),
+                R.layout.layout_sugerencias,
+                null,
+                from,
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-
-                MoverCamara(place.getLatLng());
-
+            public boolean onQueryTextSubmit(String s) {
+                return false;
             }
 
             @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                utilidades.MostrarMensaje(TAG, "An error occurred: " + status);
+            public boolean onQueryTextChange(String s) {
+                BuscarLugar(s);
+                return false;
             }
         });
+
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                // Your code here
+
+                if(c != null)
+                {
+                    if(c.getCount() > 0)
+                    {
+                        c.move(position);
+
+                        utilidades.MostrarMensaje(TAG, "Lugar seleccionado: " + c.getString(c.getColumnIndex("cityCode")));
+
+                        ReturnPlaceFromID(c.getString(c.getColumnIndex("cityCode")));
+                        searchView.setQuery("", false);
+                        searchView.clearFocus();
+
+                    }
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                // Your code here
+                return true;
+            }
+        });
+        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.content_frame);
+        rootLayout.requestFocus();
+
     }
     //<<<<<------------------------------------------------------------------------------------------
 
@@ -674,6 +695,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .addApi(AppIndex.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
         createLocationRequest();
@@ -1147,6 +1170,103 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         mMap.moveCamera(cu);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(MAPA_ZOOM));
+    }
+
+    private void ReturnPlaceFromID(String ID)
+    {
+
+        Places.GeoDataApi.getPlaceById(client, ID)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(PlaceBuffer places) {
+                        if (places.getStatus().isSuccess()) {
+                            MoverCamara(places.get(0).getLatLng());
+                        }
+                        places.release();
+                    }
+                });
+    }
+
+    // You must implements your logic to get data using OrmLite
+    private void BuscarLugar(final String query) {
+
+
+        new Thread(new Runnable() {
+            public void run() {
+                //Aquí ejecutamos nuestras tareas costosas
+                BuscarSugerencias(query);
+            }
+        }).start();
+
+
+
+
+    }
+
+
+    //BUSCAR
+    private void BuscarSugerencias(String query) {
+
+        c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName", "cityCode"});
+
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .build();
+
+
+        PendingResult<AutocompletePredictionBuffer> result =
+                Places.GeoDataApi.getAutocompletePredictions(client, query,
+                        null, typeFilter);
+
+
+        // This method should have been called off the main UI thread. Block and wait for at most 60s
+        // for a result from the API.
+        AutocompletePredictionBuffer autocompletePredictions = result.await(60, TimeUnit.SECONDS);
+
+
+        // Confirm that the query completed successfully, otherwise return null
+        final Status status = autocompletePredictions.getStatus();
+        if (!status.isSuccess()) {
+            autocompletePredictions.release();
+            utilidades.MostrarMensaje(TAG, "Algo");
+        }
+
+        // Copy the results into our own data structure, because we can't hold onto the buffer.
+        // AutocompletePrediction objects encapsulate the API response (place ID and description).
+        Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
+        //ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
+
+        int i = 0;
+        while (iterator.hasNext()) {
+            AutocompletePrediction prediction = iterator.next();
+            // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
+            //resultList.add(new PlaceAutocomplete.(prediction.getPlaceId(),
+            //        prediction.getPlaceId()));
+
+            utilidades.MostrarMensaje(TAG, "bbb " + prediction.getFullText(null));
+            //SUGGESTIONS.add(prediction.getFullText(null).toString());
+            c.addRow(new Object[] {i, prediction.getFullText(null).toString(), prediction.getPlaceId()});
+
+            i +=1;
+
+        }
+
+        // Release the buffer now that all data has been copied.
+        autocompletePredictions.release();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                utilidades.MostrarMensaje(TAG, c.getCount() + " -----");
+                mAdapter.changeCursor(c);
+
+
+
+
+            }
+        });
     }
 
 

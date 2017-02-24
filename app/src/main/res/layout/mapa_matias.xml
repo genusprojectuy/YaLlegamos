@@ -9,7 +9,9 @@
     <RelativeLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -38,11 +40,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
 
-                <fragment
-                    android:id="@+id/place_autocomplete_fragment"
-                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                <SearchView
+                    android:id="@+id/search_place"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -60,55 +61,10 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/ic_menu" />
             </RelativeLayout>
-            <!--
-            <EditText
-                android:id="@+id/et_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:background="@color/colorWhite"
-                android:cursorVisible="false"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="left|center"
-                android:hint="Buscar"
-                android:inputType="textPersonName"
-                android:textColor="#838383"
-                android:textSize="18sp" />
-
-            <RelativeLayout
-                android:id="@+id/mapa_btnSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/ic_search"
-                android:tint="#838383" />
-            </RelativeLayout>
--->
 
         </RelativeLayout>
 
-        <!--  <Button
-              android:id="@+id/btn_IniciarViaje"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:paddingBottom="3dp"
-              android:paddingLeft="30dp"
-              android:paddingRight="30dp"
-              android:textColor="#ffffff"
-              android:background="@drawable/mybutton"
-              android:text="INICIAR VIAJE"
-              android:layout_alignParentBottom="true"
-              android:layout_centerHorizontal="true"
-              android:layout_marginBottom="40dp"
-              android:textSize="18sp"
-              android:onClick="sendMessage" /> -->
+
 
         <Button
             android:id="@+id/btn_IniciarViaje"
@@ -120,19 +76,7 @@
             android:background="@drawable/ic_play"
             android:paddingTop="27dp"
             android:textColor="@color/colorWhite" />
-        <!--
-               <Button
-                   android:id="@+id/btn_IniciarViajeeee"
-                   android:layout_width="70dp"
-                   android:layout_height="70dp"
-                   android:layout_alignParentBottom="true"
-                   android:layout_centerHorizontal="true"
-                   android:layout_marginBottom="40dp"
-                   android:background="@drawable/circulo_cancelar"
-                   android:drawableTop="@drawable/ic_stop"
-                   android:paddingTop="27dp"
-                   android:textColor="#fff" />
-                   -->
+
     </RelativeLayout>
 
 

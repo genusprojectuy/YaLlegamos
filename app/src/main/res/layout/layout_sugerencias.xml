@@ -7,8 +7,13 @@
 
     <TextView
         android:id="@+id/listTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorRojo"
-        android:text="TextView" />
-    </LinearLayout>
+        android:textColor="@color/colorGris"
+        android:text="TextView"
+        android:paddingTop="10dp"
+        android:paddingLeft="5dp"
+        android:textSize="18sp"
+        android:paddingBottom="5dp" />
+
+</LinearLayout>

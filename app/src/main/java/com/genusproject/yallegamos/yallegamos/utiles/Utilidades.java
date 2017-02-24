@@ -12,6 +12,8 @@ import android.widget.Switch;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.enumerados.Tags;
 import com.genusproject.yallegamos.yallegamos.enumerados.TipoDireccion;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Time;
@@ -262,5 +264,7 @@ public class Utilidades {
             return Integer.toString(valor);
         }
     }
+
+
 
 }
