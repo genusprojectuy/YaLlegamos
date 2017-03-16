@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.DragEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.genusproject.yallegamos.yallegamos.R;
@@ -11,6 +16,7 @@ import com.genusproject.yallegamos.yallegamos.entidades.Viaje;
 import com.genusproject.yallegamos.yallegamos.entidades.ViajeRecorrido;
 import com.genusproject.yallegamos.yallegamos.logica.Observado_ListaAlertas;
 import com.genusproject.yallegamos.yallegamos.utiles.Utilidades;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,6 +42,7 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
     private CameraUpdate cu;
     private Utilidades utilidades;
     private String TAG = this.getClass().getSimpleName().toUpperCase().trim();
+    private boolean infoVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,33 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
 
         utilidades = Utilidades.getInstance();
 
+
+        //Load animation
+        final Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_down);
+
+        final Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_up);
+
+        // Start animation
+
+        final RelativeLayout relative_layout = (RelativeLayout) findViewById(R.id.layout_mas_info);
+
+        relative_layout.setOnClickListener(new  View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                if (infoVisible)
+                {
+                    relative_layout.startAnimation(slide_down);
+                    infoVisible = false;
+                }
+                else
+                {
+                    relative_layout.startAnimation(slide_up);
+                    infoVisible = true;
+                }
+            }
+        });
 
 
     }

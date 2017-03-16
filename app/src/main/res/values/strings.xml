@@ -10,8 +10,8 @@
     <string name="general">General</string>
     <string name="alarmas">Alarmas</string>
     <string name="eliminar_viajes">Eliminar Viajes</string>
-    <string name="viaje_fecha" formatted="false">Viaje realizado el día [%=FECHA]</string>
-    <string name="viaje_origen" formatted="false">Desde [%=DIRECCION] - Hora: [%=HORA]</string>
+    <string name="viaje_fecha" formatted="false">Fecha: [%=FECHA]</string>
+    <string name="viaje_origen" formatted="false">Viaje iniciado en [%=DIRECCION]</string>
     <string name="viaje_destino" formatted="false">Hasta [%=DIRECCION] - Hora: [%=HORA]</string>
     <string name="viaje_distancia" formatted="false">Distancia recorrida: [%=DISTANCIA]</string>
     <string name="viaje_tiempo" formatted="false">Tiempo: [%=TIEMPO]</string>
