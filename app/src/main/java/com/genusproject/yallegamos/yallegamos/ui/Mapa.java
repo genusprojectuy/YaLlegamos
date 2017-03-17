@@ -809,7 +809,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         configuracion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Mapa.this, Prueba.class);
+                Intent intent = new Intent(Mapa.this, u_Configuracion.class);
                 startActivity(intent);
                 drawerLayout.closeDrawers();
 
@@ -1212,7 +1212,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
                 .build();
-
 
         PendingResult<AutocompletePredictionBuffer> result =
                 Places.GeoDataApi.getAutocompletePredictions(client, query,

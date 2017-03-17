@@ -232,7 +232,7 @@ public class Utilidades {
 
     }
 
-    private String CalcularDuracion(long time)
+    public String CalcularDuracion(long time)
     {
 
         float seconds = (time / 1000);

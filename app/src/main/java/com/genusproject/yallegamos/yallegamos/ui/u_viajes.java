@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.genusproject.yallegamos.yallegamos.R;
 import com.genusproject.yallegamos.yallegamos.adaptadores.ViajesAdapter;
@@ -32,6 +33,7 @@ public class u_viajes extends AppCompatActivity {
     private Observado_ListaAlertas p;
     private Utilidades utilidades;
     private  ListView list;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class u_viajes extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Viajes");
         actionBar.show();
+
+        progressBar = (ProgressBar) findViewById(R.id.progreso_cargar_viajes);
+        progressBar.setVisibility(View.VISIBLE);
 
         utilidades = Utilidades.getInstance();
         p = Observado_ListaAlertas.getInstance(getApplicationContext());
@@ -168,6 +173,7 @@ public class u_viajes extends AppCompatActivity {
             @Override
             public void run() {
                 list.setAdapter(new ViajesAdapter(getApplicationContext(), lstViajes));
+                progressBar.setVisibility(View.INVISIBLE);
             }});
     }
 

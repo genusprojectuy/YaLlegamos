@@ -62,9 +62,6 @@ public class ViajesAdapter extends ArrayAdapter {
 
             holder.fecha      = (TextView) convertView.findViewById(R.id.v_txt_fecha);
             holder.origen     = (TextView) convertView.findViewById(R.id.v_txt_origen);
-            holder.destino    = (TextView) convertView.findViewById(R.id.v_txt_destino);
-            holder.distancia  = (TextView) convertView.findViewById(R.id.v_txt_distanciaRecorrida);
-            holder.tiempo     = (TextView) convertView.findViewById(R.id.v_txt_tiempo_demorado);
 
             convertView.setTag(holder);
         } else {
@@ -76,10 +73,6 @@ public class ViajesAdapter extends ArrayAdapter {
         holder.fecha.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_fecha), item.getFecha(), Tags.FECHA));
         holder.origen.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_origen), item.getDireccion_origen(), Tags.DIRECCION));
         holder.origen.setText(utilidades.ReemplazarTags((String) holder.origen.getText(), item.getH_origen(), Tags.HORA));
-        holder.destino.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_destino), item.getDireccion_destino(), Tags.DIRECCION));
-        holder.destino.setText(utilidades.ReemplazarTags((String) holder.destino.getText(), item.getH_destino(), Tags.HORA));
-        holder.distancia.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_distancia), item.getDistanciaRecorrida(), Tags.DISTANCIA));
-        holder.tiempo.setText(utilidades.ReemplazarTags((String) getContext().getResources().getText(R.string.viaje_tiempo), item.getDuracion(), Tags.TIEMPO));
 
 
     return convertView;
@@ -88,9 +81,6 @@ public class ViajesAdapter extends ArrayAdapter {
     private static class ViewHolder {
         public TextView fecha;
         public TextView origen;
-        public TextView destino;
-        public TextView distancia;
-        public TextView tiempo;
     }
 
 

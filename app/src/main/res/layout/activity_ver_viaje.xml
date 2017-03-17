@@ -20,10 +20,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
     <RelativeLayout
         android:id="@+id/layout_mas_info2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="@color/colorBlanco"
@@ -62,6 +64,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txt_verViaje_Origen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Avenida calle de los textos largos para pruebas 1578" />
@@ -88,6 +91,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txt_verViaje_Destino"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Camino de los inocentes que quieren hacer mucha plata" />
@@ -114,6 +118,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txt_verViaje_Fecha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="21/03/2017" />
@@ -141,6 +146,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txt_verViaje_Duracion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1 hora 57 minutos" />
@@ -153,18 +159,10 @@
         </LinearLayout> <!-- Este cierra el que abre arriba del texto información-->
 
 
+
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/acaTenesIDs"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/ic_play"
-        android:textColor="@color/colorWhite"
-        android:layout_centerInParent="false"
-        android:layout_marginBottom="139dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+
 
         </RelativeLayout>
 

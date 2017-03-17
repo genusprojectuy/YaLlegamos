@@ -17,4 +17,11 @@
         android:background="@color/colorWhite"
         android:divider="#ccc"
         android:dividerHeight="1dp"/>
+
+    <ProgressBar
+        android:id="@+id/progreso_cargar_viajes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

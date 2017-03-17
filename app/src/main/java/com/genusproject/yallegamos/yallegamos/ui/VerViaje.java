@@ -1,14 +1,19 @@
 package com.genusproject.yallegamos.yallegamos.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.genusproject.yallegamos.yallegamos.R;
@@ -28,6 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.FECHA_HORA;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_LINEA_COLOR;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_LINEA_WIDTH;
 import static com.genusproject.yallegamos.yallegamos.utiles.Constantes.MAPA_PADDING;
@@ -42,7 +48,8 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
     private CameraUpdate cu;
     private Utilidades utilidades;
     private String TAG = this.getClass().getSimpleName().toUpperCase().trim();
-    private boolean infoVisible = false;
+    private boolean infoVisible;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,15 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
 
         utilidades = Utilidades.getInstance();
 
+        TextView txt_verViaje_Origen    = (TextView) findViewById(R.id.txt_verViaje_Origen);
+        TextView txt_verViaje_Destino   = (TextView) findViewById(R.id.txt_verViaje_Destino);
+        TextView txt_verViaje_Fecha     = (TextView) findViewById(R.id.txt_verViaje_Fecha);
+        TextView txt_verViaje_Duracion  = (TextView) findViewById(R.id.txt_verViaje_Duracion);
+
+        txt_verViaje_Origen.setText(viaje.getDireccion_origen());
+        txt_verViaje_Destino.setText(viaje.getDireccion_destino());
+        txt_verViaje_Fecha.setText(FECHA_HORA.format(viaje.getH_origen()));
+        txt_verViaje_Duracion.setText(utilidades.CalcularDuracion(viaje.getDuracion()));
 
         //Load animation
         final Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -68,19 +84,56 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
 
         // Start animation
 
-        final RelativeLayout relative_layout = (RelativeLayout) findViewById(R.id.layout_mas_info);
+        final RelativeLayout relative_layout = (RelativeLayout) findViewById(R.id.layout_mas_info2);
+
+
+
+        infoVisible = true;
 
         relative_layout.setOnClickListener(new  View.OnClickListener(){
             @Override
             public void onClick(View v){
+
                 if (infoVisible)
                 {
+                    utilidades.MostrarMensaje(TAG, "Ocultar");
+
                     relative_layout.startAnimation(slide_down);
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after 100ms
+
+                            ViewGroup.LayoutParams params= relative_layout.getLayoutParams();
+                            params.height= (int) getResources().getDimension(R.dimen.ocultarInfo_Height);
+                            relative_layout.setLayoutParams(params);
+                        }
+                    }, getResources().getInteger(R.integer.medio_segundo));
+
+
                     infoVisible = false;
                 }
                 else
                 {
+                    utilidades.MostrarMensaje(TAG, "Mostrar");
                     relative_layout.startAnimation(slide_up);
+
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Do something after 100ms
+
+                            ViewGroup.LayoutParams params= relative_layout.getLayoutParams();
+                            params.height= (int) getResources().getDimension(R.dimen.mostrarInfo_Height);
+                            relative_layout.setLayoutParams(params);
+
+                        }
+                    }, getResources().getInteger(R.integer.medio_segundo));
+
                     infoVisible = true;
                 }
             }
