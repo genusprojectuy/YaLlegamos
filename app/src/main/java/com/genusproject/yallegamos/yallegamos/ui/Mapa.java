@@ -642,6 +642,8 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
 
+        searchView.setQueryHint("Buscar ciudades");
+
 
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override

@@ -164,6 +164,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="22dp"
+                    android:visibility="visible"
                     app:srcCompat="@drawable/ic_configuracion" />
 
             </RelativeLayout>
