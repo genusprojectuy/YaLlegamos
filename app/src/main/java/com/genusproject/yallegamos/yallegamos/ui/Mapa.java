@@ -810,6 +810,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Mapa.this, u_Configuracion.class);
+                //Intent intent = new Intent(Mapa.this, Prueba.class);
                 startActivity(intent);
                 drawerLayout.closeDrawers();
 

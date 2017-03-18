@@ -75,20 +75,12 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
         txt_verViaje_Fecha.setText(FECHA_HORA.format(viaje.getH_origen()));
         txt_verViaje_Duracion.setText(utilidades.CalcularDuracion(viaje.getDuracion()));
 
-        //Load animation
-        final Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_down);
-
-        final Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_up);
-
-        // Start animation
-
-        final RelativeLayout relative_layout = (RelativeLayout) findViewById(R.id.layout_mas_info2);
-
-
+       // Start animation
+        final RelativeLayout relative_layout = (RelativeLayout) findViewById(R.id.layout_mas_info_superior);
 
         infoVisible = true;
+
+        final ViewGroup.LayoutParams params= relative_layout.getLayoutParams();
 
         relative_layout.setOnClickListener(new  View.OnClickListener(){
             @Override
@@ -96,45 +88,30 @@ public class VerViaje extends FragmentActivity implements OnMapReadyCallback {
 
                 if (infoVisible)
                 {
-                    utilidades.MostrarMensaje(TAG, "Ocultar");
-
-                    relative_layout.startAnimation(slide_down);
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 100ms
-
-                            ViewGroup.LayoutParams params= relative_layout.getLayoutParams();
-                            params.height= (int) getResources().getDimension(R.dimen.ocultarInfo_Height);
-                            relative_layout.setLayoutParams(params);
-                        }
-                    }, getResources().getInteger(R.integer.medio_segundo));
-
-
                     infoVisible = false;
+
+                    int alturaInicial   = params.height;
+                    int alturaFinal     = ((int) getResources().getDimension(R.dimen.ocultarInfo_Height));
+
+                    relative_layout.animate()
+                            .translationY((alturaInicial - alturaFinal))
+                            .setDuration(getResources().getInteger(R.integer.medio_segundo))
+                            .start();
+
+
                 }
                 else
                 {
-                    utilidades.MostrarMensaje(TAG, "Mostrar");
-                    relative_layout.startAnimation(slide_up);
-
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 100ms
-
-                            ViewGroup.LayoutParams params= relative_layout.getLayoutParams();
-                            params.height= (int) getResources().getDimension(R.dimen.mostrarInfo_Height);
-                            relative_layout.setLayoutParams(params);
-
-                        }
-                    }, getResources().getInteger(R.integer.medio_segundo));
-
                     infoVisible = true;
+
+                    int alturaInicial   = params.height;
+                    int alturaFinal     = ((int) getResources().getDimension(R.dimen.mostrarInfo_Height));
+
+                    relative_layout.animate()
+                            .translationY((alturaFinal - alturaInicial))
+                            .setDuration(getResources().getInteger(R.integer.medio_segundo))
+                            .start();
+
                 }
             }
         });

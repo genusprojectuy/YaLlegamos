@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="mostrarInfo_Height">250dp</dimen>
-    <dimen name="ocultarInfo_Height">20dp</dimen>
+    <dimen name="mostrarInfo_Height">300dp</dimen>
+    <dimen name="ocultarInfo_Height">30dp</dimen>
 </resources>
