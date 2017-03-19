@@ -386,6 +386,16 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
             return;
         }
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(Mapa.this, new String[]{Manifest.permission.INTERNET}, 1);
+
+            utilidades.MostrarMensaje(TAG, "Sin permiso para ENTRAR A INTERNET");
+
+            return;
+
+        }
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {

@@ -2,4 +2,6 @@
 <resources>
     <dimen name="mostrarInfo_Height">300dp</dimen>
     <dimen name="ocultarInfo_Height">30dp</dimen>
+    <dimen name="ocultarImg_Height">0dp</dimen>
+    <dimen name="mostrarImg_Height">300dp</dimen>
 </resources>

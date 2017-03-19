@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingBottom="20dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp">
+        android:paddingTop="20dp">
 
 
         <ImageView
@@ -27,27 +27,48 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"  >
+            android:paddingRight="5dp">
 
             <TextView
                 android:id="@+id/v_txt_origen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:textStyle="bold"
                 android:layout_gravity="left"
-                android:text="@string/viaje_origen" />
+                android:text="@string/viaje_origen"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/v_txt_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
                 android:layout_gravity="left"
-                android:text="@string/viaje_fecha" />
+                android:text="@string/viaje_fecha"
+                android:textSize="12dp" />
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_imagen"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ocultarImg_Height"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progreso_cargando_imagen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/mapa_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_menu_mapmode" />
     </LinearLayout>
 
 
