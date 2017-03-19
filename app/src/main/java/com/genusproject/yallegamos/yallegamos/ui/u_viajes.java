@@ -318,7 +318,7 @@ public class u_viajes extends AppCompatActivity {
 
 
         }
-        String url ="https://maps.googleapis.com/maps/api/staticmap?size=" + ancho + "x" + alto + "&path=color:0xff0000ff|weight:5|" + latitudesLongitudes + "&key=" + (getResources().getString(R.string.google_maps_key)) ;
+        String url ="https://maps.googleapis.com/maps/api/staticmap?size=" + ancho + "x" + alto + "&padding=7&path=color:blue|weight:5|" + latitudesLongitudes + "&key=" + (getResources().getString(R.string.google_maps_key)) ;
         return  url;
     }
 }
