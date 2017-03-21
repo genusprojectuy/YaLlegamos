@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/your_dialog_root_element"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:text="Distancia Restante:" />
+            android:text="@string/distancia_restante" />
 
         <TextView
             android:id="@+id/txt_d_distancia"
@@ -85,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
-            android:text="Aceptar"
+            android:text="@string/aceptar"
             android:textColor="#0097a7" />
 
         <Button
@@ -97,7 +98,7 @@
             android:layout_toEndOf="@+id/btn_Alarma_Aceptar"
             android:paddingBottom="3dp"
             android:paddingTop="3dp"
-            android:text="Eliminar"
+            android:text="@string/eliminar"
             android:textColor="#0097a7" />
 
 

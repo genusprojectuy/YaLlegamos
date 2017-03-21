@@ -130,12 +130,13 @@
                     android:text="@string/viajes"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="10dp"
+                    android:visibility="visible"
                     app:srcCompat="@drawable/ic_viajes" />
             </RelativeLayout>
 
@@ -158,7 +159,7 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorGris" />
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_alignParentRight="true"

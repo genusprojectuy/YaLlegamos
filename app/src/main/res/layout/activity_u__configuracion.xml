@@ -18,13 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tono:" />
+            android:text="@string/tono" />
 
         <TextView
             android:id="@+id/txt_cfg_select_sound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ninguno" />
+            android:text="@string/ninguno" />
 
     </LinearLayout>
 
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sonido" />
+            android:text="@string/sonido" />
 
         <Switch
             android:id="@+id/swc_ActSound"
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Vibrar:" />
+            android:text="@string/vibrar" />
 
         <Switch
             android:id="@+id/swc_ActVibr"

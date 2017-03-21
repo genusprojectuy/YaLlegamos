@@ -1,20 +1,29 @@
 <resources>
-    <string name="app_name">YaLlegamos</string>
-    <string name="title_activity_mapa">YaLlegamos</string>
+    <string name="app_name">WeArrived</string>
+    <string name="title_activity_mapa">WeArrived</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="Cancelar">CANCELAR</string>
-    <string name="Iniciar_Viaje">INICIAR VIAJE</string>
-    <string name="configuraci_n">Configuración</string>
-    <string name="viajes">Viajes</string>
+    <string name="Iniciar_Viaje">START TRIP</string>
+    <string name="configuraci_n">Settings</string>
+    <string name="viajes">Travels</string>
     <string name="general">General</string>
-    <string name="alarmas">Alarmas</string>
-    <string name="eliminar_viajes">Eliminar Viajes</string>
-    <string name="viaje_fecha" formatted="false">Fecha: [%=FECHA]</string>
-    <string name="viaje_origen" formatted="false">Viaje iniciado en [%=DIRECCION]</string>
-    <string name="viaje_destino" formatted="false">Hasta [%=DIRECCION] - Hora: [%=HORA]</string>
-    <string name="viaje_distancia" formatted="false">Distancia recorrida: [%=DISTANCIA]</string>
-    <string name="viaje_tiempo" formatted="false">Tiempo: [%=TIEMPO]</string>
+    <string name="alarmas">Alarms</string>
+    <string name="eliminar_viajes">Delete Travels</string>
+    <string name="viaje_fecha" formatted="false">Date: [%=FECHA]</string>
+    <string name="viaje_origen" formatted="false">Travel started at [%=DIRECCION]</string>
+    <string name="viaje_destino" formatted="false">To [%=DIRECCION] - Time: [%=HORA]</string>
+    <string name="viaje_distancia" formatted="false">Distance Traveled: [%=DISTANCIA]</string>
+    <string name="viaje_tiempo" formatted="false">Time: [%=TIEMPO]</string>
     <string name="app_label">Applabel</string>
     <string name="search_hint">search_hint</string>
+    <string name="aqui_estamos">You are here</string>
+    <string name="distancia_restante">Remaining distance</string>
+    <string name="rango">Range</string>
+    <string name="aceptar">CONFIRM</string>
+    <string name="eliminar">DELETE</string>
+    <string name="Cancelar">CANCEL</string>
+    <string name="tono">Tone</string>
+    <string name="sonido">Sound</string>
+    <string name="vibrar">Vibrate</string>
+    <string name="ninguno">None</string>
 </resources>

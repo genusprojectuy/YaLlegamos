@@ -913,7 +913,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         String tDistanciaA      = utilidades.Km_Mt(_distanciaA);
 
         txt_d_dst.setText(tDistanciaA);
-        txtRango.setText("Rango: " + utilidades.ObtenerTextoRango(alerta.getRango()));
+        txtRango.setText(getResources().getString(R.string.rango) + utilidades.ObtenerTextoRango(alerta.getRango()));
         txt_d_dir.setText(alerta.getDireccion());
 
         if(alerta.getEstado().equals(PENDIENTE))
