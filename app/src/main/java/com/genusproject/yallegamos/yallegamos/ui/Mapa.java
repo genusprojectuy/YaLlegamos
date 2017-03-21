@@ -652,7 +652,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             }
         });
 
-        searchView.setQueryHint("Buscar ciudades");
+        searchView.setQueryHint(getResources().getString(R.string.buscar_ciudades));
 
 
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {

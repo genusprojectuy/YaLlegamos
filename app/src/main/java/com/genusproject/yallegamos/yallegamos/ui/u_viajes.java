@@ -123,22 +123,22 @@ public class u_viajes extends AppCompatActivity {
             case R.id.btn_elim_viajes:
                 AlertDialog.Builder builder = new AlertDialog.Builder(u_viajes.this);
                 // Add the buttons
-                builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.eliminar), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button
                         EliminarTodosLosRecorridos();
                         dialog.cancel();
                     }
                 });
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.Cancelar), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         dialog.cancel();
                     }
                 });
 
-                builder.setTitle("Eliminar viajes");
-                builder.setMessage("Desea eliminar todos los recorridos?");
+                builder.setTitle(getString(R.string.eliminar_viajes));
+                builder.setMessage(getString(R.string.pregunta_eliminar_viaje));
 
                 // Create the AlertDialog
                 AlertDialog dialog = builder.create();
@@ -247,7 +247,7 @@ public class u_viajes extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(u_viajes.this);
                 // Add the buttons
-                builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.eliminar), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button
                         p.DelViaje(yourData);
@@ -255,15 +255,15 @@ public class u_viajes extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.Cancelar), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         dialog.cancel();
                     }
                 });
 
-                builder.setTitle("Eliminar viaje");
-                builder.setMessage("Desea eliminar el recorrido?");
+                builder.setTitle(getString(R.string.eliminar_viaje));
+                builder.setMessage(getString(R.string.pregunta_eliminar_un_viaje));
 
                 // Create the AlertDialog
                 AlertDialog dialog = builder.create();

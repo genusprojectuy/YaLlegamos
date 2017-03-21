@@ -9,6 +9,9 @@
     <string name="general">General</string>
     <string name="alarmas">Alarms</string>
     <string name="eliminar_viajes">Delete Travels</string>
+    <string name="eliminar_viaje">Delete Travel</string>
+    <string name="pregunta_eliminar_viaje">Do you want to delete all your travels?</string>
+    <string name="pregunta_eliminar_un_viaje">Do you want to delete this travel?</string>
     <string name="viaje_fecha" formatted="false">Date: [%=FECHA]</string>
     <string name="viaje_origen" formatted="false">Travel started at [%=DIRECCION]</string>
     <string name="viaje_destino" formatted="false">To [%=DIRECCION] - Time: [%=HORA]</string>
@@ -26,4 +29,5 @@
     <string name="sonido">Sound</string>
     <string name="vibrar">Vibrate</string>
     <string name="ninguno">None</string>
+    <string name="buscar_ciudades">Search Cities</string>
 </resources>
