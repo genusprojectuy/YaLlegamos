@@ -155,6 +155,7 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     private boolean primerServicio;
     private MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName", "cityCode"});
     private SimpleCursorAdapter mAdapter;
+    private String busquedaPrevia;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -1220,63 +1221,71 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     //BUSCAR
     private void BuscarSugerencias(String query) {
 
-        c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName", "cityCode"});
+        if(!query.trim().equals(busquedaPrevia)) {
+            busquedaPrevia = query.trim();
 
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
-                .build();
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                    .build();
 
-        PendingResult<AutocompletePredictionBuffer> result =
-                Places.GeoDataApi.getAutocompletePredictions(client, query,
-                        null, typeFilter);
-
-
-        // This method should have been called off the main UI thread. Block and wait for at most 60s
-        // for a result from the API.
-        AutocompletePredictionBuffer autocompletePredictions = result.await(60, TimeUnit.SECONDS);
+            PendingResult<AutocompletePredictionBuffer> result =
+                    Places.GeoDataApi.getAutocompletePredictions(client, query,
+                            null, typeFilter);
 
 
-        // Confirm that the query completed successfully, otherwise return null
-        final Status status = autocompletePredictions.getStatus();
-        if (!status.isSuccess()) {
+            // This method should have been called off the main UI thread. Block and wait for at most 60s
+            // for a result from the API.
+            AutocompletePredictionBuffer autocompletePredictions = result.await(60, TimeUnit.SECONDS);
+
+
+            // Confirm that the query completed successfully, otherwise return null
+            final Status status = autocompletePredictions.getStatus();
+            if (!status.isSuccess()) {
+                autocompletePredictions.release();
+                utilidades.MostrarMensaje(TAG, "Algo");
+            }
+
+            // Copy the results into our own data structure, because we can't hold onto the buffer.
+            // AutocompletePrediction objects encapsulate the API response (place ID and description).
+            Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
+            //ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
+
+            utilidades.MostrarMensaje(TAG, "Previo al while");
+            c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName", "cityCode"});
+
+            int i = 0;
+            while (iterator.hasNext()) {
+                AutocompletePrediction prediction = iterator.next();
+                // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
+                //resultList.add(new PlaceAutocomplete.(prediction.getPlaceId(),
+                //        prediction.getPlaceId()));
+
+                //SUGGESTIONS.add(prediction.getFullText(null).toString());
+                c.addRow(new Object[]{i, prediction.getFullText(null).toString(), prediction.getPlaceId()});
+
+                i += 1;
+                utilidades.MostrarMensaje(TAG, "Capturando " + i);
+
+            }
+
+
+            // Release the buffer now that all data has been copied.
             autocompletePredictions.release();
-            utilidades.MostrarMensaje(TAG, "Algo");
-        }
-
-        // Copy the results into our own data structure, because we can't hold onto the buffer.
-        // AutocompletePrediction objects encapsulate the API response (place ID and description).
-        Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
-        //ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
-
-        int i = 0;
-        while (iterator.hasNext()) {
-            AutocompletePrediction prediction = iterator.next();
-            // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
-            //resultList.add(new PlaceAutocomplete.(prediction.getPlaceId(),
-            //        prediction.getPlaceId()));
-
-            //SUGGESTIONS.add(prediction.getFullText(null).toString());
-            c.addRow(new Object[] {i, prediction.getFullText(null).toString(), prediction.getPlaceId()});
-
-            i +=1;
-
+            RefrescarSugerencias();
 
         }
+    }
 
+    private void RefrescarSugerencias()
+    {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
+                utilidades.MostrarMensaje(TAG, "NUEVO " + c.getCount());
                 mAdapter.changeCursor(c);
                 mAdapter.notifyDataSetChanged();
-
             }
         });
-
-        // Release the buffer now that all data has been copied.
-        autocompletePredictions.release();
-
-
     }
 
 
