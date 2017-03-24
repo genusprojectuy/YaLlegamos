@@ -223,8 +223,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         o_Observado_ListaAlertas = Observado_ListaAlertas.getInstance(this);
         o_Observado_ListaAlertas.addObserver(this);
         lstAlerta = o_Observado_ListaAlertas.getLstAlerta();
-        utilidades.MostrarMensaje(TAG, "Cargando lista, cantidad: " + lstAlerta.size());
-
         buildGoogleApiClient();
         updateValuesFromBundle(savedInstanceState);
         ArmarMenu();
@@ -332,7 +330,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
-        utilidades.MostrarMensaje(TAG, "Conección con el cliente de google suspendida");
         client.connect();
     }
 
@@ -666,8 +663,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                     if(c.getCount() > 0)
                     {
                         c.move(position);
-
-                        utilidades.MostrarMensaje(TAG, "Lugar seleccionado: " + c.getString(c.getColumnIndex("cityCode")));
 
                         ReturnPlaceFromID(c.getString(c.getColumnIndex("cityCode")));
                         searchView.setQuery("", false);
@@ -1102,14 +1097,12 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
 
         if (o_Observado_ListaAlertas.ServicioActivo())
         {
-            utilidades.MostrarMensaje(TAG, "Detener servicio " + AlarmaServicio.class.getCanonicalName());
 
             o_Observado_ListaAlertas.SetServicioActivo(false);
 
         }
         else {
 
-            utilidades.MostrarMensaje(TAG, "Iniciar servicio");
             if (o_Observado_ListaAlertas.ExistenAlertasActivasSinProcesar()) {
 
                 Viaje viaje = new Viaje();
@@ -1242,7 +1235,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
                 autocompletePredictions.release();
-                utilidades.MostrarMensaje(TAG, "Algo");
             }
 
             // Copy the results into our own data structure, because we can't hold onto the buffer.
@@ -1250,7 +1242,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
             Iterator<AutocompletePrediction> iterator = autocompletePredictions.iterator();
             //ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
 
-            utilidades.MostrarMensaje(TAG, "Previo al while");
             c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName", "cityCode"});
 
             int i = 0;
@@ -1264,7 +1255,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
                 c.addRow(new Object[]{i, prediction.getFullText(null).toString(), prediction.getPlaceId()});
 
                 i += 1;
-                utilidades.MostrarMensaje(TAG, "Capturando " + i);
 
             }
 
@@ -1281,7 +1271,6 @@ public class Mapa extends FragmentActivity implements GoogleMap.OnInfoWindowClic
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                utilidades.MostrarMensaje(TAG, "NUEVO " + c.getCount());
                 mAdapter.changeCursor(c);
                 mAdapter.notifyDataSetChanged();
             }
