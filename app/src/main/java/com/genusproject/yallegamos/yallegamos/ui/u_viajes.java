@@ -162,8 +162,6 @@ public class u_viajes extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, final View view, int position, long l) {
 
-                utilidades.MostrarMensaje(TAG, "Ampliando layout");
-
                 LinearLayout imagen = (LinearLayout) view.findViewById(R.id.layout_imagen);
                 ViewGroup.LayoutParams params= imagen.getLayoutParams();
 
@@ -178,11 +176,9 @@ public class u_viajes extends AppCompatActivity {
                 {
                     params.height = alturaOcultar;
 
-                    utilidades.MostrarMensaje(TAG, "Ocultar");
                 }
                 else
                 {
-                    utilidades.MostrarMensaje(TAG, "Mostrar");
 
                     final ProgressBar progreso = (ProgressBar) view.findViewById(R.id.progreso_cargando_imagen);
                     progreso.setVisibility(View.VISIBLE);
@@ -201,12 +197,10 @@ public class u_viajes extends AppCompatActivity {
                             Bitmap bmp = null;
                             try {
                                 URL url = new URL(surl);
-                                utilidades.MostrarMensaje(TAG, "Buscando imagen: " + surl);
                                 bmp     = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
 
                             } catch (Exception e) {
-                                utilidades.MostrarMensaje(TAG, "Error al capturar imagen");
                                 e.printStackTrace();
 
                             }
@@ -270,7 +264,7 @@ public class u_viajes extends AppCompatActivity {
 
                 dialog.show();
 
-                return false;
+                return true;
             }
         });
 /*
